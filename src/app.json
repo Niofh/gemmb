@@ -1,0 +1,47 @@
+{
+  "pages": [
+    "pages/index/main",
+    "pages/monitor/main",
+    "pages/setting/main",
+    "pages/work-order/main"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "Gemmb监控管理系统",
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "color": "#666666",
+    "backgroundColor": "#E9E9E9",
+    "selectedColor": "#5AC790",
+    "borderStyle": "white",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/index/main",
+        "iconPath": "static/tabs/home.png",
+        "selectedIconPath": "static/tabs/homeActive.png"
+      },
+      {
+        "text": "监控",
+        "pagePath": "pages/monitor/main",
+        "iconPath": "static/tabs/jiankong.png",
+        "selectedIconPath": "static/tabs/jiankongActive.png"
+      },
+      {
+        "text": "工单",
+        "pagePath": "pages/work-order/main",
+        "iconPath": "static/tabs/gongdan.png",
+        "selectedIconPath": "static/tabs/gongdanActive.png"
+      },
+      {
+        "text": "设置",
+        "pagePath": "pages/setting/main",
+        "iconPath": "static/tabs/setting.png",
+        "selectedIconPath": "static/tabs/settingActive.png"
+      }
+    ],
+    "position": "bottom"
+  }
+}
