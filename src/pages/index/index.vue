@@ -1,11 +1,15 @@
 <template>
-  <div class="work-order">
-    首页
+  <div class="home">
+    <my-footer :active="0"></my-footer>
   </div>
 </template>
 
 <script>
+  import myFooter from "@/components/my-footer/index.vue"
   export default {
+    components:{
+      'my-footer':myFooter
+    },
     data() {
       return {};
     }

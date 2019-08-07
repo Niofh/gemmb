@@ -1,0 +1,6 @@
+{
+  "usingComponents": {
+    "van-picker": "/static/vant/picker/index",
+    "van-action-sheet": "/static/vant/action-sheet/index"
+  }
+}

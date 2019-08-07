@@ -40,5 +40,8 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 # 踩坑
 https://www.jianshu.com/p/de667b477057
 
+## mpvue vendor.js解决文件过大
+https://blog.csdn.net/alisa_lisa/article/details/90515585
+
 # vue-i18n 配置mpvue
 https://ask.dcloud.net.cn/article/35102
