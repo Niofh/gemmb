@@ -45,3 +45,74 @@ https://blog.csdn.net/alisa_lisa/article/details/90515585
 
 # vue-i18n 配置mpvue
 https://ask.dcloud.net.cn/article/35102
+
+
+## components
+
+### table-row 表格头部
+
+```vue
+<table-row :rows="rows"></table-row>
+
+<script >
+import tableRow from "@/components/table-row/index.vue";
+  export default {
+    components: {
+      "table-row": tableRow,
+    },
+    data() {
+      return {
+        rows: [
+          {
+            width: "22%",
+            name: "优先级",
+            selectOptions: [
+              {
+                id: 1,
+                name: "Critical"
+              },
+              {
+                id: 2,
+                name: "Major"
+              },
+              {
+                id: 3,
+                name: "Minor"
+              },
+              {
+                id: 4,
+                name: "Warining"
+              },
+              {
+                id: 5,
+                name: "Normal"
+              }
+
+            ],
+            isArrow: true
+          },
+          {
+            width: "28%",
+            name: "设备名称",
+            isArrow: true
+          },
+          {
+            width: "28%",
+            name: "设备IP",
+            isArrow: true
+          },
+          {
+            width: "22%",
+            name: "地点",
+            isArrow: true
+          }
+        ]
+      };
+    },
+  }
+
+</script>
+
+
+
+```

@@ -6,7 +6,10 @@ Vue.use(VueI18n)
 const messages = {
   zh: {
     message: {
-      setting: "设置"
+      setting: "设置",
+      devicesSummary: '设备总结',
+      alertsSummary: '告警总结',
+      ticketSummary: '工单总结',
     }
   },
   en: {

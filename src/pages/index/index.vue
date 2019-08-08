@@ -1,12 +1,67 @@
 <template>
   <div class="home">
-<!--    <div class="process">
-      <div class="process-1"></div>
-      <div class="process-2"></div>
-    </div>-->
-    <my-progress :total="120" :critical="30" :warning="5" :major="30" ></my-progress>
 
-    <table-row :rows="rows"></table-row>
+    <div class="header">{{i18n.devicesSummary}}</div>
+    <div class="progress-list">
+      <my-progress :bg-color="bgColor" :critical="10" :total="60" right-text="1/60">
+        Critical
+      </my-progress>
+      <my-progress :bg-color="bgColor" right-text="1/10" :warning="1" :total="10">
+        Warning
+      </my-progress>
+      <my-progress :bg-color="bgColor" right-text="1/10" :minor="1" :total="10">
+        Minor
+      </my-progress>
+      <my-progress :bg-color="bgColor" right-text="1/10" :major="1" :total="10">
+        Major
+      </my-progress>
+      <my-progress :bg-color="bgColor" :critical="2"
+                   :warning="2"
+                   :minor="2"
+                   :major="2"
+                   right-text="1/10"
+                   :total="10">
+        Normal
+      </my-progress>
+    </div>
+
+
+    <div class="header">{{i18n.alertsSummary}}</div>
+    <div class="progress-list">
+      <my-progress  :critical="10" :total="60" right-text="1/60">
+        Critical
+      </my-progress>
+      <my-progress  right-text="1/10" :warning="1" :total="10">
+        Warning
+      </my-progress>
+      <my-progress  right-text="1/10" :minor="1" :total="10">
+        Minor
+      </my-progress>
+      <my-progress  right-text="1/10" :major="1" :total="10">
+        Major
+      </my-progress>
+
+    </div>
+
+
+    <div class="header">{{i18n.ticketSummary}}</div>
+    <div class="progress-list">
+      <my-progress  :critical="10" :total="60" right-text="1">
+        P1
+      </my-progress>
+      <my-progress  right-text="1" :warning="1" :total="10">
+        P2
+      </my-progress>
+      <my-progress  right-text="1" :minor="1" :total="10">
+        P3
+      </my-progress>
+      <my-progress  right-text="1" :major="1" :total="10">
+        P4
+      </my-progress>
+
+    </div>
+
+    <div class="station"></div>
 
     <my-footer :active="0"></my-footer>
   </div>
@@ -14,63 +69,21 @@
 
 <script>
   import myFooter from "@/components/my-footer/index.vue";
-  import tableRow from "@/components/table-row/index.vue";
   import myProgress from "@/components/my-progress/index.vue";
 
   export default {
     components: {
       "my-footer": myFooter,
-      "table-row": tableRow,
       "my-progress": myProgress
+    },
+    computed:{
+      i18n(){
+        return this.$t('message')
+      }
     },
     data() {
       return {
-        check: false,
-        rows: [
-          {
-            width: "22%",
-            name: "优先级",
-            selectOptions: [
-              {
-                id: 1,
-                name: "Critical"
-              },
-              {
-                id: 2,
-                name: "Major"
-              },
-              {
-                id: 3,
-                name: "Minor"
-              },
-              {
-                id: 4,
-                name: "Warining"
-              },
-              {
-                id: 5,
-                name: "Normal"
-              }
-
-            ],
-            isArrow: true
-          },
-          {
-            width: "28%",
-            name: "设备名称",
-            isArrow: true
-          },
-          {
-            width: "28%",
-            name: "设备IP",
-            isArrow: true
-          },
-          {
-            width: "22%",
-            name: "地点",
-            isArrow: true
-          }
-        ]
+        bgColor: '#0CC808'
       };
     },
     methods: {
@@ -94,27 +107,6 @@
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"
 
-  .process {
-    width 80%
-    height: rpx(16);
-    background: rgba(12, 200, 8, 1);
-    border-radius: 8px;
-    overflow hidden
-
-    .process-1 {
-      width 10%
-      float left
-      background-color red
-      height: rpx(16)
-    }
-
-    .process-2 {
-      float left
-      width 20%
-      height: rpx(16)
-      background-color blue
-    }
-  }
 
 
 </style>
