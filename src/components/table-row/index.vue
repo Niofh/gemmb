@@ -11,7 +11,7 @@
           <div class="header-item" :data-index="index" @click="onSelect(i,$event)">
             <div class="header-col">
               <span class="name">{{item.name}}</span>
-              <van-icon v-if="item.selectOptions&&item.selectOptions.length>0" custom-class="icon-arrow"
+              <van-icon v-if="item.isArrow" custom-class="icon-arrow"
                         :name="i===index&&selectShow?'arrow-up':'arrow-down'"
                         color="#fff"></van-icon>
             </div>
@@ -39,34 +39,32 @@
       return {
         selectShow: false, //控制下拉列表的显示隐藏，false隐藏、true显示
         index: -1 //选择的下拉列表下标
-      }
+      };
     },
     methods: {
       onSelect(index, e) {
-        console.log(e)
-        const oldIndex = e.mp.currentTarget.dataset.index
+        console.log(e);
+        const oldIndex = e.mp.currentTarget.dataset.index;
 
         if (oldIndex === index) {
 
-          this.selectShow = !this.selectShow
+          this.selectShow = !this.selectShow;
         } else {
-          this.selectShow = true
+          this.selectShow = true;
         }
-        this.index = index
+        this.index = index;
       },
       arrow() {
-        return "arrow-down"
+        return "arrow-down";
       }
     }
-  }
+  };
 </script>
 
 
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"
   .my-table {
-    padding 0 rpx(30)
-
     .row-wrap {
       position relative
       border-radius rpx(8)

@@ -1,10 +1,10 @@
 <template>
   <div class="home">
-    <div class="process">
+<!--    <div class="process">
       <div class="process-1"></div>
       <div class="process-2"></div>
-    </div>
-
+    </div>-->
+    <my-progress :total="120" :critical="30" :warning="5" :major="30" ></my-progress>
 
     <table-row :rows="rows"></table-row>
 
@@ -15,18 +15,20 @@
 <script>
   import myFooter from "@/components/my-footer/index.vue";
   import tableRow from "@/components/table-row/index.vue";
+  import myProgress from "@/components/my-progress/index.vue";
 
   export default {
     components: {
       "my-footer": myFooter,
       "table-row": tableRow,
+      "my-progress": myProgress
     },
     data() {
       return {
         check: false,
         rows: [
           {
-            width: '22%',
+            width: "22%",
             name: "优先级",
             selectOptions: [
               {
@@ -48,36 +50,40 @@
               {
                 id: 5,
                 name: "Normal"
-              },
+              }
 
-            ]
+            ],
+            isArrow: true
           },
           {
-            width: '28%',
-            name: "设备名称"
+            width: "28%",
+            name: "设备名称",
+            isArrow: true
           },
           {
-            width: '28%',
-            name: "设备IP"
+            width: "28%",
+            name: "设备IP",
+            isArrow: true
           },
           {
-            width: '22%',
-            name: "地点"
+            width: "22%",
+            name: "地点",
+            isArrow: true
           }
         ]
       };
     },
     methods: {
       onChangeSelect(e) {
-        console.log(e)
-        this.check = !this.check
+        console.log(e);
+        this.check = !this.check;
 
       },
       onHome(e) {
-        console.log(e, "home")
+        console.log(e, "home");
       },
       onHide() {
-        this.check = false
+        this.check = false;
       }
     }
 

@@ -1,21 +1,42 @@
-
 /*设计图px转换rpx*/
 rpx(num)
-  num  * 1rpx
+  num * 1rpx
 
 
-//$error=#E60012
-//$error=#448ACA
-//$error=#F39800
-//$error=#E9D310
-//$error=#0CC808
+$critical = #E60012
+$warning = #448ACA
+$minor = #F39800
+$major = #E9D310
+$normal = #0CC808
 
-.header{
+
+.critical-color {
+  color $critical
+}
+
+.waring-color {
+  color $warning
+}
+
+.minor-color {
+  color $minor
+}
+
+.major-color {
+  color $major
+}
+
+.normal-color {
+  color $normal
+}
+
+
+.header {
   margin rpx(24) 0 rpx(24) rpx(30)
   font-size rpx(28)
-  font-weight:400;
-  color:#999999;
-  line-height:rpx(36);
+  font-weight: 400;
+  color: #999999;
+  line-height: rpx(36);
 }
 
 
