@@ -10,6 +10,8 @@ const messages = {
       devicesSummary: '设备总结',
       alertsSummary: '告警总结',
       ticketSummary: '工单总结',
+      equipmentDetails: '设备详情',
+      performanceManagement: '性能管理',
     }
   },
   en: {

@@ -14,7 +14,7 @@ $normal = #0CC808
   color $critical
 }
 
-.waring-color {
+.warning-color {
   color $warning
 }
 
@@ -30,7 +30,7 @@ $normal = #0CC808
   color $normal
 }
 
-
+// 标题
 .header {
   margin rpx(24) 0 rpx(24) rpx(30)
   font-size rpx(28)
@@ -39,6 +39,7 @@ $normal = #0CC808
   line-height: rpx(36);
 }
 
+// 进度条列表
 .progress-list {
   margin rpx(18) rpx(30) rpx(33)
   padding rpx(30)
@@ -47,9 +48,69 @@ $normal = #0CC808
   border-radius: rpx(15);
 }
 
+// 底部占位符
 .station {
   height rpx(80)
 }
 
+.link {
+  text-decoration underline
+}
+
+// 表格列表
+.table-wrap {
+  margin rpx(38) rpx(30)
+
+  .my-table-cell {
+    margin-top rpx(6)
+    padding rpx(18) 0
+    overflow hidden
+
+    &.critical {
+      background-color $critical
+    }
+
+    &.warning {
+      background-color $warning
+    }
+
+    &.minor {
+      background-color $minor
+    }
+
+    &.major {
+      background-color $major
+    }
+
+    &.normal {
+      background-color $normal
+    }
+
+    &.history {
+      background-color #ffffff
+
+      .my-cell-item {
+        color #474544
+      }
+    }
+
+    .my-cell-item {
+      float left
+      font-size: rpx(24);
+      font-weight: 400;
+      color #FFFFFF
+      text-align left
+
+      .left {
+        margin-left rpx(20)
+
+        .link {
+          text-decoration underline
+        }
+      }
+    }
+  }
+
+}
 
 

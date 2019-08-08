@@ -1,0 +1,143 @@
+<template>
+  <div class="monitor-detail">
+    <div class="header">{{i18n.equipmentDetails}}</div>
+
+    <div class="address">
+      <div class="address-bg">
+        <div class="address-wrap">
+          <div class="address-header">CS-CE</div>
+          <div class="address-body">
+            <div class="left">CISCO2911/K9</div>
+            <div class="right">192.168.1.1</div>
+          </div>
+          <div class="address-footer">
+            <span class="left">上海</span>
+            <span class="right">上海市青浦区嘉松中路5555号奥特莱斯品牌直销广场B189耐克换季优惠店</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="order-id">关联工单ID : <a class="link" href="">12131215</a></div>
+    <div class="header">{{i18n.performanceManagement}}</div>
+    <div class="progress-list">
+      <my-progress :critical="10" :total="60" bg-color="#0CC808">
+        ping
+        <icon class="icon" type="cancel" size="18"/>
+      </my-progress>
+      <my-progress :normal="1" :total="10" bg-color="#F39800">
+        接口利用率
+        <icon class="icon" type="success" size="18"/>
+      </my-progress>
+      <my-progress :normal="1" :total="10" bg-color="#F39800">
+        Cpu利用率
+        <icon class="icon" type="warn" color="#E60012" size="18"/>
+      </my-progress>
+      <my-progress :normal="1" :total="10" bg-color="#F39800">
+        内存利用率
+        <icon class="icon" type="success" color="#F39800" size="18"/>
+      </my-progress>
+
+    </div>
+  </div>
+</template>
+
+<script>
+  import myProgress from "@/components/my-progress/index.vue";
+
+  export default {
+    components: {
+      "my-progress": myProgress
+    },
+    computed: {
+      i18n() {
+        return this.$t("message")
+      }
+    },
+    data() {
+      return {};
+    }
+
+  };
+</script>
+
+<style lang="stylus" scoped>
+  @import "~@/assets/stylus/common.styl"
+
+  .address {
+    padding rpx(0) rpx(30)
+  }
+
+  .address-bg {
+    width 100%
+    height 100%
+    background url("https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565277730&di=6cefbd51da7caf6e65d5396dff6df3f2&src=http://file01.16sucai.com/d/file/2014-01-25/13906605539127.jpg") center center no-repeat
+    background-size: cover
+
+    .address-wrap {
+      color: #fff;
+      padding rpx(30)
+
+      .address-header {
+        font-size: rpx(36);
+        font-weight: bold;
+      }
+    }
+
+    .address-body {
+      padding-top rpx(46)
+      padding-bottom rpx(76)
+      font-size: rpx(32);
+      font-weight: 500;
+      display flex
+
+      .left {
+        flex 1
+      }
+
+      .right {
+        flex 1
+        text-align right
+      }
+    }
+
+    .address-footer {
+      display flex
+
+      .left {
+        margin-right rpx(28)
+        font-size: rpx(32);
+        font-weight: 500;
+      }
+
+      .right {
+        flex 1
+        font-size: rpx(20);
+        font-weight: 500;
+        line-height: rpx(28);
+      }
+    }
+  }
+
+  .order-id {
+    margin-top rpx(32)
+    margin-bottom rpx(78)
+    padding rpx(0) rpx(30)
+    font-size: rpx(28);
+    font-weight: 500;
+    color #666666
+
+    .link {
+      display inline-block
+    }
+  }
+
+  .progress-list {
+    .icon {
+      vertical-align middle
+    }
+  }
+
+
+</style>

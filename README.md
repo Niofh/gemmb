@@ -40,6 +40,8 @@ For detailed explanation on how things work, checkout the [guide](http://vuejs-t
 # 踩坑
 https://www.jianshu.com/p/de667b477057
 
+* [mpvue连接跳转和传递参数](https://www.jianshu.com/p/4a2a00260439)
+
 ## mpvue vendor.js解决文件过大
 https://blog.csdn.net/alisa_lisa/article/details/90515585
 
@@ -55,7 +57,7 @@ https://ask.dcloud.net.cn/article/35102
 <table-row :rows="rows"></table-row>
 
 <script >
-import tableRow from "@/components/table-row/index.vue";
+import tableRow from 'my-table-row';
   export default {
     components: {
       "table-row": tableRow,

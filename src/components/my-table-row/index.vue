@@ -7,6 +7,7 @@
              v-for="(item,i) in rows"
              :key="i"
              :style="{'width':item.width}"
+             @click="onRowClick(item)"
         >
           <div class="header-item" :data-index="index" @click="onSelect(i,$event)">
             <div class="header-col">
@@ -19,7 +20,10 @@
           <div v-show="item.selectOptions&&item.selectOptions.length&&i===index?selectShow:false" class="my-select">
             <div class="up-arrow"></div>
             <ul class="wrap">
-              <li class="item" v-for="select in item.selectOptions" :key="select.id">{{select.name}}</li>
+              <li class="item" v-for="select in item.selectOptions" :key="select.id"
+                  @click="onSelectOptionClick.stop(item,select)"
+              >{{select.name}}
+              </li>
             </ul>
           </div>
         </div>
@@ -31,7 +35,7 @@
 
 <script>
   export default {
-    name: "table-row",
+    name: "my-table-row",
     props: {
       rows: Array
     },
@@ -56,6 +60,14 @@
       },
       arrow() {
         return "arrow-down";
+      },
+
+      // 下拉框点击事件
+      onSelectOptionClick(item, select) {
+        this.$emit('onSelectOption', {item, select, selectShow: this.selectShow})
+      },
+      onRowClick(item) {
+        this.$emit('onRowClick', {item, selectShow: this.selectShow})
       }
     }
   };
@@ -68,7 +80,8 @@
     .row-wrap {
       position relative
       border-radius rpx(8)
-      background-color #2E2E2D
+      /*background-color #2E2E2D*/
+      background: linear-gradient(#656364, #2E2E2D);
 
       .item-col {
         position relative

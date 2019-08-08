@@ -1,18 +1,114 @@
 <template>
   <div class="monitor">
-    监控页
-    <my-footer :active="1" />
+    <div class="table-wrap">
+      <my-table-row :rows="rows"></my-table-row>
+      <div class="my-table-cell" v-for="c in cells" :key="c.id" :class="c.status">
+        <div class="my-cell-item" :style="{'width':rows[0].width}"><div class="left">{{c.status}}</div></div>
+        <div class="my-cell-item" :style="{'width':rows[1].width}"><div class="left "><a class="link" href="/pages/monitor-detail/main">{{c.shebei}}</a></div></div>
+        <div class="my-cell-item" :style="{'width':rows[2].width}"><div class="left "><a class="link" href="/pages/monitor-detail/main">{{c.ip}}</a></div></div>
+        <div class="my-cell-item" :style="{'width':rows[3].width}"><div class="left">{{c.place}}</div></div>
+      </div>
+    </div>
+    <div class="station"></div>
+    <my-footer :active="1"/>
   </div>
 </template>
 
 <script>
   import myFooter from "@/components/my-footer"
+  import myTableRow from '@/components/my-table-row/index.vue'
+
   export default {
-    components:{
-      'my-footer':myFooter
+    components: {
+      'my-footer': myFooter,
+      'my-table-row': myTableRow,
     },
     data() {
-      return {};
+      return {
+        rows: [
+          {
+            width: "22%",
+            name: "状态",
+            isArrow: true,
+            selectOptions: [
+              {
+                id: 1,
+                name: "Critical"
+              },
+              {
+                id: 2,
+                name: "Major"
+              },
+              {
+                id: 3,
+                name: "Minor"
+              },
+              {
+                id: 4,
+                name: "Warining"
+              },
+              {
+                id: 5,
+                name: "Normal"
+              }
+
+            ],
+          },
+          {
+            width: "28%",
+            name: "设备名称",
+            isArrow: true
+          },
+          {
+            width: "28%",
+            name: "设备IP",
+            isArrow: true
+          },
+          {
+            width: "22%",
+            name: "地点",
+            isArrow: true
+          }
+        ],
+        cells:[
+          {
+            id:1,
+            status:"normal",
+            shebei:'Aruba AC 620',
+            ip:'192.168.1.1',
+            place:'上海',
+          },
+          {
+            id:2,
+            status:"history",
+            shebei:'Aruba AC 620',
+            ip:'192.168.1.1',
+            place:'上海',
+          },
+          {
+            id:3,
+            status:"critical",
+            shebei:'Aruba AC 620',
+            ip:'192.168.1.1',
+            place:'上海',
+          },
+          {
+            id:4,
+            status:"warning",
+            shebei:'Aruba AC 620',
+            ip:'192.168.1.1',
+            place:'上海',
+          },
+          {
+            id:5,
+            status:"major",
+            shebei:'Aruba AC 620',
+            ip:'192.168.1.1',
+            place:'上海',
+          },
+
+        ]
+      };
     }
 
   };
@@ -20,5 +116,7 @@
 
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"
+
+
 
 </style>

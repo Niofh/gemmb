@@ -3,6 +3,7 @@
     "pages/login/main",
     "pages/index/main",
     "pages/monitor/main",
+    "pages/monitor-detail/main",
     "pages/setting/main",
     "pages/work-order/main"
   ],
