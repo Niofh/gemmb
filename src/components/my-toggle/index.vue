@@ -30,13 +30,13 @@
     },
     methods:{
       toggle(e){
+        console.log(this.$root.$mp.page)
         this.arrow = !this.arrow
-        // console.log(this.$root.app)
-        // var query=wx.createSelectorQuery();
-        // query.select('.my-body').boundingClientRect()
-        // query.exec(function(res){
-        //   console.log(res[0].height)
-        // })
+        var query=wx.createSelectorQuery();
+        query.selectAll('.my-body').boundingClientRect()
+        query.exec(function(res){
+          console.log(res)
+        })
       }
     }
   };
