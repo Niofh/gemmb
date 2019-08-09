@@ -5,7 +5,8 @@
     "pages/monitor/main",
     "pages/monitor-detail/main",
     "pages/setting/main",
-    "pages/work-order/main"
+    "pages/work-order/main",
+    "pages/work-order-detail/main"
   ],
   "window": {
     "backgroundTextStyle": "light",

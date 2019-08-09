@@ -14,6 +14,11 @@ const messages = {
       performanceManagement: '性能管理',
       alertsHistory: '历史告警',
       ticketHistory: '历史工单',
+      faultList:'故障列表',
+      changeTicket:'变更工单',
+      faultTicket:'故障工单',
+      ticketJounals:'工单日志',
+      deviceAlarm:'设备告警',
     }
   },
   en: {

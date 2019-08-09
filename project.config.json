@@ -24,7 +24,6 @@
 	"projectname": "geemb",
 	"simulatorType": "wechat",
 	"simulatorPluginLibVersion": {},
-	"libVersion": "2.8.0",
 	"condition": {
 		"search": {
 			"current": -1,
@@ -43,7 +42,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 2,
+			"current": 4,
 			"list": [
 				{
 					"id": -1,
@@ -62,6 +61,20 @@
 					"id": -1,
 					"name": "监控详情页",
 					"pathName": "pages/monitor-detail/main",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "工单页",
+					"pathName": "pages/work-order/main",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "工单详情页",
+					"pathName": "pages/work-order-detail/main",
 					"scene": null
 				}
 			]
