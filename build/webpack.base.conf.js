@@ -116,9 +116,9 @@ let baseWebpackConfig = {
         ignore: ['.*']
       }
     ]),
-    new UglifyJsPlugin({
-      sourceMap: true
-    })
+    // new UglifyJsPlugin({
+    //   sourceMap: true
+    // })
   ]
 }
 

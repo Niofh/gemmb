@@ -46,6 +46,10 @@
             Aruba 11110设备状态从up变为down，ping包丢失100%，宕机时间180s。
           </my-desc-item>
 
+          <my-desc-item border-color="#0CE501" date="2019-11-11 11:11:11">
+            Aruba 11110设备状态从up变为down，ping包丢失100%，宕机时间180s。
+          </my-desc-item>
+
         </tempalte>
 
       </my-toggle>
