@@ -40,15 +40,55 @@
       </my-progress>
 
     </div>
+
+    <div class="header">{{i18n.alertsHistory}}</div>
+
+
+    <div class="mar-l-r-30">
+      <div class="header-bg">{{i18n.alertsHistory}}</div>
+      <my-desc-item date="2019-11-11 11:11:11">
+        Aruba Ac620设备状态从up变为down，ping包丢失100%，宕机时间180s。
+      </my-desc-item>
+
+      <my-desc-item border-color="#0CE501" date="2019-11-11 11:11:11">
+        Aruba 11110设备状态从up变为down，ping包丢失100%，宕机时间180s。
+      </my-desc-item>
+
+    </div>
+
+    <div class="header">{{i18n.ticketHistory}}</div>
+
+
+    <div class="table-wrap">
+      <my-table-row :rows="rows"></my-table-row>
+      <div class="my-table-cell" v-for="c in cells" :key="c.id" :class="c.color">
+        <div class="my-cell-item" :style="{'width':rows[0].width}"><div class="left">{{c.ip}}</div></div>
+        <div class="my-cell-item" :style="{'width':rows[1].width}"><div class="left ">哈哈</div></div>
+        <div class="my-cell-item" :style="{'width':rows[2].width}"><div class="left ">P1</div></div>
+        <div class="my-cell-item" :style="{'width':rows[3].width}"><div class="left">{{c.status}}</div></div>
+        <div class="my-cell-item" :style="{'width':rows[4].width}"><div class="left">
+          <div class="date">2019.7.13</div>
+          <div class="time">16:45:00</div>
+        </div></div>
+      </div>
+    </div>
+
+    <div class="station-min"></div>
   </div>
 </template>
 
 <script>
   import myProgress from "@/components/my-progress/index.vue";
-
+  import myDescItem from "@/components/my-desc-item/index.vue";
+  import myTable from '@/components/my-table-row'
+  import myTableRow from '@/components/my-table-row/index.vue'
   export default {
     components: {
-      "my-progress": myProgress
+      "my-progress": myProgress,
+      "my-desc-item": myDescItem,
+      "my-table": myTable,
+      'my-table-row': myTableRow,
+
     },
     computed: {
       i18n() {
@@ -56,7 +96,58 @@
       }
     },
     data() {
-      return {};
+      return {
+        rows: [
+          {
+            width: "24%",
+            name: "工单IP",
+            isArrow: true,
+          },
+          {
+            width: "18%",
+            name: "类型",
+            isArrow: true
+          },
+          {
+            width: "20%",
+            name: "优先级",
+            isArrow: true
+          },
+          {
+            width: "18%",
+            name: "状态",
+            isArrow: true
+          },
+          {
+            width: "20%",
+            name: "时间",
+            isArrow: true
+          },
+        ],
+        cells:[
+          {
+            id:1,
+            color:"history",
+            ip:'192.168.1.1',
+            place:'上海',
+            type:'故障',
+            you:"p1",
+            status:"open",
+            date:"10000000000",
+          },
+          {
+            id:2,
+            color:"history",
+            ip:'192.168.1.1',
+            place:'上海',
+            type:'故障',
+            you:"p1",
+            status:"open",
+            date:"10000000000",
+          },
+
+        ]
+      };
     }
 
   };

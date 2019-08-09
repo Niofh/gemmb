@@ -12,6 +12,8 @@ const messages = {
       ticketSummary: '工单总结',
       equipmentDetails: '设备详情',
       performanceManagement: '性能管理',
+      alertsHistory: '历史告警',
+      ticketHistory: '历史工单',
     }
   },
   en: {
