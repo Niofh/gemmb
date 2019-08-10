@@ -132,6 +132,7 @@
 
         .name {
           line-height rpx(24)
+          word-break break-word
         }
       }
 

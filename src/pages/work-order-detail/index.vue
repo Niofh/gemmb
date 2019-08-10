@@ -78,26 +78,27 @@
       }
     },
     data() {
+      const i18n = this.$t('message')
       return {
         rows: [
           {
             width: "27%",
-            name: "优先级",
+            name: i18n.Priority,
             isArrow: true,
           },
           {
             width: "27%",
-            name: "工单ID",
+            name: i18n.TicketID,
             isArrow: true
           },
           {
             width: "25%",
-            name: "关联设备",
+            name: i18n.Device,
             isArrow: true
           },
           {
             width: "21%",
-            name: "状态",
+            name: i18n.Status,
             isArrow: true
           }
         ],

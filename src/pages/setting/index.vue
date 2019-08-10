@@ -10,8 +10,8 @@
           value-key="name"
           active-class="active-class"
           :columns="array"
-          confirm-button-text="确定"
-          cancel-button-text="取消"
+          :confirm-button-text="i18n.confirm"
+          :cancel-button-text="i18n.cancel"
           @confirm="onChange"
           @cancel="show=false"
         ></van-picker>
@@ -19,18 +19,18 @@
     </div>
     <div class="select-lang-wrap" @click="show=true">
       <img class="img" src="/static/images/map.png" alt="maps">
-      语言选择
-      <span class="right">{{array[index].name}}</span>
+      {{i18n.Language}}
+      <span class="right">{{i18n.lang}}</span>
     </div>
     <div class="btn">
-      <button type="primary" @click="onSignOut"> 退出登录</button>
+      <button type="primary" @click="onSignOut"> {{i18n.signOut}}</button>
     </div>
     <my-footer :active="3"/>
   </div>
 </template>
 
 <script>
-  import myFooter from "@/components/my-footer";
+  import myFooter from "@/components/my-footer"
 
   export default {
     components: {
@@ -38,7 +38,7 @@
     },
     computed: {
       i18n() {
-        return this.$t("message");
+        return this.$t("message")
       }
     },
     data() {
@@ -48,7 +48,7 @@
         array: [
           {
             name: "中国",
-            code: "zh-CN"
+            code: "zh"
           },
           {
             name: "English",
@@ -56,17 +56,19 @@
           }
         ],
         index: 0
-      };
+      }
     },
     mounted() {
 
     },
     methods: {
       onChange(e) {
-        console.log(e.mp);
-        const { value, index } = e.mp.detail;
-        this.index = index;
-        this.show = false;
+        console.log(e.mp)
+        const { value, index } = e.mp.detail
+        this.index = index
+        this.show = false
+        this.$i18n.locale = value.code
+        this.$store.commit("setLang",value.code)
       },
       onSignOut() {
         wx.showModal({
@@ -74,18 +76,18 @@
           content: "退出后不会删除任何历史数据，下次登录依然可以使用本账号",
           success(res) {
             if (res.confirm) {
-              console.log("用户点击确定");
+              console.log("用户点击确定")
               wx.redirectTo({
                 url: "/pages/login/main"
-              });
+              })
             } else if (res.cancel) {
-              console.log("用户点击取消");
+              console.log("用户点击取消")
             }
           }
-        });
+        })
       }
     }
-  };
+  }
 </script>
 
 <style lang="stylus">

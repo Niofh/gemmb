@@ -26,7 +26,6 @@
   import myFooter from "@/components/my-footer"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-
   export default {
     mixins: [myTableRowMixin],
     components: {
@@ -34,11 +33,12 @@
       "my-table-row": myTableRow
     },
     data() {
+      const i18n = this.$t('message')
       return {
         rows: [
           {
             width: "22%",
-            name: "状态",
+            name: i18n.Status,
             isArrow: true,
             selectOptions: [
               {
@@ -66,17 +66,17 @@
           },
           {
             width: "28%",
-            name: "设备名称",
+            name: i18n.Hostname,
             isArrow: true
           },
           {
-            width: "28%",
-            name: "设备IP",
+            width: "26%",
+            name: i18n.IP,
             isArrow: true
           },
           {
-            width: "22%",
-            name: "地点",
+            width: "24%",
+            name: i18n.location,
             isArrow: true
           }
         ],

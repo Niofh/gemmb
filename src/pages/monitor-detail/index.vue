@@ -19,7 +19,7 @@
     </div>
 
 
-    <div class="order-id">关联工单ID : <a class="link" href="">12131215</a></div>
+    <div class="order-id">{{i18n.AssociatedTicketID}} : <a class="link" href="">12131215</a></div>
     <div class="header">{{i18n.performanceManagement}}</div>
     <div class="progress-list">
       <my-progress :critical="10" :total="60" bg-color="#0CC808">
@@ -27,15 +27,15 @@
         <icon class="icon" type="cancel" size="18"/>
       </my-progress>
       <my-progress :normal="1" :total="10" bg-color="#F39800">
-        接口利用率
+        {{i18n.InterfaceUtilization}}
         <icon class="icon" type="success" size="18"/>
       </my-progress>
       <my-progress :normal="1" :total="10" bg-color="#F39800">
-        Cpu利用率
+        {{i18n.CpuUtilization}}
         <icon class="icon" type="warn" color="#E60012" size="18"/>
       </my-progress>
       <my-progress :normal="1" :total="10" bg-color="#F39800">
-        内存利用率
+        {{i18n.MemoryUtilization}}
         <icon class="icon" type="success" color="#F39800" size="18"/>
       </my-progress>
 
@@ -109,31 +109,32 @@
       }
     },
     data() {
+      const i18n = this.$t("message")
       return {
         rows: [
           {
-            width: "24%",
-            name: "工单IP",
+            width: "22%",
+            name: i18n.IP,
             isArrow: true
           },
           {
-            width: "18%",
-            name: "类型",
-            isArrow: true
-          },
-          {
-            width: "20%",
-            name: "优先级",
-            isArrow: true
-          },
-          {
-            width: "18%",
-            name: "状态",
+            width: "19%",
+            name: i18n.Type,
             isArrow: true
           },
           {
             width: "20%",
-            name: "时间",
+            name: i18n.Priority,
+            isArrow: true
+          },
+          {
+            width: "19%",
+            name: i18n.Status,
+            isArrow: true
+          },
+          {
+            width: "20%",
+            name: i18n.Time,
             isArrow: true
           }
         ],
@@ -167,10 +168,11 @@
 
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"
-  .monitor-detail{
+  .monitor-detail {
     width 100%
-    min-height  100%
+    min-height 100%
   }
+
   .address {
     padding rpx(0) rpx(30)
   }

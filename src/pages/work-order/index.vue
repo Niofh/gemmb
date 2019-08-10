@@ -47,42 +47,43 @@
 </template>
 
 <script>
-  import myTable from "@/components/my-table-row";
-  import myTableRow from "@/components/my-table-row/index.vue";
-  import myFooter from "@/components/my-footer/index.vue";
+  import myTable from "@/components/my-table-row"
+  import myTableRow from "@/components/my-table-row/index.vue"
+  import myFooter from "@/components/my-footer/index.vue"
 
   export default {
     components: {
       "my-table": myTable,
       "my-table-row": myTableRow,
-      "my-footer": myFooter,
+      "my-footer": myFooter
     },
     computed: {
       i18n() {
-        return this.$t("message");
+        return this.$t("message")
       }
     },
     data() {
+      const i18n = this.$t("message")
       return {
         rows: [
           {
             width: "27%",
-            name: "优先级",
+            name: i18n.Priority,
             isArrow: true
           },
           {
             width: "27%",
-            name: "工单ID",
+            name: i18n.TicketID,
             isArrow: true
           },
           {
             width: "25%",
-            name: "关联设备",
+            name: i18n.Device,
             isArrow: true
           },
           {
             width: "21%",
-            name: "状态",
+            name: i18n.Status,
             isArrow: true
           }
         ],
@@ -112,22 +113,22 @@
         changeRows: [
           {
             width: "27%",
-            name: "工单ID",
+            name: i18n.TicketID,
             isArrow: true
           },
           {
             width: "30%",
-            name: "关联设备",
+            name: i18n.Device,
             isArrow: true
           },
           {
             width: "20%",
-            name: "类型",
+            name: i18n.Type,
             isArrow: true
           },
           {
             width: "23%",
-            name: "状态",
+            name: i18n.Status,
             isArrow: true
           }
         ],
@@ -155,10 +156,10 @@
 
         ]
 
-      };
+      }
     }
 
-  };
+  }
 </script>
 
 <style lang="stylus" scoped>
