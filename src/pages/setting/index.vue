@@ -25,25 +25,26 @@
     <div class="btn">
       <button type="primary" @click="onSignOut"> 退出登录</button>
     </div>
-    <my-footer :active="3" />
+    <my-footer :active="3"/>
   </div>
 </template>
 
 <script>
-  import myFooter from "@/components/my-footer"
+  import myFooter from "@/components/my-footer";
+
   export default {
-    components:{
-      'my-footer':myFooter
+    components: {
+      "my-footer": myFooter
     },
     computed: {
       i18n() {
-        return this.$t('message')
+        return this.$t("message");
       }
     },
     data() {
       return {
         show: false,
-        activeClass: 'activeClass',
+        activeClass: "activeClass",
         array: [
           {
             name: "中国",
@@ -52,9 +53,9 @@
           {
             name: "English",
             code: "en"
-          },
+          }
         ],
-        index: 0,
+        index: 0
       };
     },
     mounted() {
@@ -62,10 +63,10 @@
     },
     methods: {
       onChange(e) {
-        console.log(e.mp)
-        const {value, index} = e.mp.detail;
-        this.index = index
-        this.show = false
+        console.log(e.mp);
+        const { value, index } = e.mp.detail;
+        this.index = index;
+        this.show = false;
       },
       onSignOut() {
         wx.showModal({
@@ -74,6 +75,9 @@
           success(res) {
             if (res.confirm) {
               console.log("用户点击确定");
+              wx.redirectTo({
+                url: "/pages/login/main"
+              });
             } else if (res.cancel) {
               console.log("用户点击取消");
             }
@@ -94,6 +98,7 @@
       .van-picker__confirm {
         color #06D149 !important
       }
+
       .van-picker__cancel {
         color #474544 !important
       }

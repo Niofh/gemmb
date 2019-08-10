@@ -9,19 +9,20 @@
              :style="{'width':item.width}"
              @click="onRowClick(item)"
         >
-          <div class="header-item" :data-index="index" @click="onSelect(i,$event)">
+          <div class="header-item" :data-index="index" @click.stop="onSelect(i,$event)">
             <div class="header-col">
               <span class="name">{{item.name}}</span>
               <van-icon v-if="item.isArrow" custom-class="icon-arrow"
-                        :name="i===index&&selectShow?'arrow-up':'arrow-down'"
+                        :name="isShowSelect&&i===index&&selectShow?'arrow-up':'arrow-down'"
                         color="#fff"></van-icon>
             </div>
           </div>
-          <div v-show="item.selectOptions&&item.selectOptions.length&&i===index?selectShow:false" class="my-select">
+          <div v-show="isShowSelect&&item.selectOptions&&item.selectOptions.length&&i===index?selectShow:false"
+               class="my-select">
             <div class="up-arrow"></div>
             <ul class="wrap">
               <li class="item" v-for="select in item.selectOptions" :key="select.id"
-                  @click="onSelectOptionClick.stop(item,select)"
+                  @click.stop="onSelectOptionClick(item,select)"
               >{{select.name}}
               </li>
             </ul>
@@ -37,40 +38,53 @@
   export default {
     name: "my-table-row",
     props: {
-      rows: Array
+      rows: Array,
+      isShowSelect: { // 是否能显示下拉框,因为点击空白处隐藏
+        type: Boolean,
+        default: true
+      }
     },
     data() {
       return {
         selectShow: false, //控制下拉列表的显示隐藏，false隐藏、true显示
         index: -1 //选择的下拉列表下标
-      };
+      }
     },
     methods: {
       onSelect(index, e) {
-        console.log(e);
-        const oldIndex = e.mp.currentTarget.dataset.index;
+        console.log('哈哈哈')
 
-        if (oldIndex === index) {
+        console.log(this.isShowSelect,'this.isShowSelect')
+        if (this.isShowSelect === false) { //点击了空白处
 
-          this.selectShow = !this.selectShow;
+          this.selectShow = true
+          this.$emit("update:isShowSelect", true)
         } else {
-          this.selectShow = true;
+          // 判断是否点击空白处
+          const oldIndex = e.mp.currentTarget.dataset.index
+          if (oldIndex === index) {
+
+            this.selectShow = !this.selectShow
+          } else {
+            this.selectShow = true
+          }
         }
-        this.index = index;
+        this.index = index
+        this.isShowSelect = true
       },
       arrow() {
-        return "arrow-down";
+        return "arrow-down"
       },
 
       // 下拉框点击事件
       onSelectOptionClick(item, select) {
-        this.$emit('onSelectOption', {item, select, selectShow: this.selectShow})
+        this.$emit("onSelectOption", { item, select, selectShow: this.selectShow })
       },
       onRowClick(item) {
-        this.$emit('onRowClick', {item, selectShow: this.selectShow})
+        this.$emit("onRowClick", { item, selectShow: this.selectShow })
       }
     }
-  };
+  }
 </script>
 
 

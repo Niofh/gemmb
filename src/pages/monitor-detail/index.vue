@@ -1,5 +1,5 @@
 <template>
-  <div class="monitor-detail">
+  <div class="monitor-detail" @click="pageClick">
     <div class="header">{{i18n.equipmentDetails}}</div>
 
     <div class="address">
@@ -60,16 +60,26 @@
 
 
     <div class="table-wrap">
-      <my-table-row :rows="rows"></my-table-row>
+      <my-table-row :rows="rows" :is-show-select.sync="isShowSelect"></my-table-row>
       <div class="my-table-cell" v-for="c in cells" :key="c.id" :class="c.color">
-        <div class="my-cell-item" :style="{'width':rows[0].width}"><div class="left">{{c.ip}}</div></div>
-        <div class="my-cell-item" :style="{'width':rows[1].width}"><div class="left ">哈哈</div></div>
-        <div class="my-cell-item" :style="{'width':rows[2].width}"><div class="left ">P1</div></div>
-        <div class="my-cell-item" :style="{'width':rows[3].width}"><div class="left">{{c.status}}</div></div>
-        <div class="my-cell-item" :style="{'width':rows[4].width}"><div class="left">
-          <div class="date">2019.7.13</div>
-          <div class="time">16:45:00</div>
-        </div></div>
+        <div class="my-cell-item" :style="{'width':rows[0].width}">
+          <div class="left">{{c.ip}}</div>
+        </div>
+        <div class="my-cell-item" :style="{'width':rows[1].width}">
+          <div class="left ">哈哈</div>
+        </div>
+        <div class="my-cell-item" :style="{'width':rows[2].width}">
+          <div class="left ">P1</div>
+        </div>
+        <div class="my-cell-item" :style="{'width':rows[3].width}">
+          <div class="left">{{c.status}}</div>
+        </div>
+        <div class="my-cell-item" :style="{'width':rows[4].width}">
+          <div class="left">
+            <div class="date">2019.7.13</div>
+            <div class="time">16:45:00</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -78,16 +88,19 @@
 </template>
 
 <script>
-  import myProgress from "@/components/my-progress/index.vue";
-  import myDescItem from "@/components/my-desc-item/index.vue";
-  import myTable from '@/components/my-table-row'
-  import myTableRow from '@/components/my-table-row/index.vue'
+  import myProgress from "@/components/my-progress/index.vue"
+  import myDescItem from "@/components/my-desc-item/index.vue"
+  import myTable from "@/components/my-table-row"
+  import myTableRow from "@/components/my-table-row/index.vue"
+  import myTableRowMixin from "@/mixins/myTableRowMixin"
+
   export default {
+    mixins: [myTableRowMixin],
     components: {
       "my-progress": myProgress,
       "my-desc-item": myDescItem,
       "my-table": myTable,
-      'my-table-row': myTableRow,
+      "my-table-row": myTableRow
 
     },
     computed: {
@@ -101,7 +114,7 @@
           {
             width: "24%",
             name: "工单IP",
-            isArrow: true,
+            isArrow: true
           },
           {
             width: "18%",
@@ -122,40 +135,42 @@
             width: "20%",
             name: "时间",
             isArrow: true
-          },
+          }
         ],
-        cells:[
+        cells: [
           {
-            id:1,
-            color:"history",
-            ip:'192.168.1.1',
-            place:'上海',
-            type:'故障',
-            you:"p1",
-            status:"open",
-            date:"10000000000",
+            id: 1,
+            color: "history",
+            ip: "192.168.1.1",
+            place: "上海",
+            type: "故障",
+            you: "p1",
+            status: "open",
+            date: "10000000000"
           },
           {
-            id:2,
-            color:"history",
-            ip:'192.168.1.1',
-            place:'上海',
-            type:'故障',
-            you:"p1",
-            status:"open",
-            date:"10000000000",
-          },
+            id: 2,
+            color: "history",
+            ip: "192.168.1.1",
+            place: "上海",
+            type: "故障",
+            you: "p1",
+            status: "open",
+            date: "10000000000"
+          }
 
         ]
-      };
+      }
     }
-
-  };
+  }
 </script>
 
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"
-
+  .monitor-detail{
+    width 100%
+    min-height  100%
+  }
   .address {
     padding rpx(0) rpx(30)
   }

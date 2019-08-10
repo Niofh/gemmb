@@ -36,7 +36,7 @@
             remember username and password
           </van-checkbox>
         </div>
-        <van-button type="danger" size="large">Login</van-button>
+        <van-button type="danger" size="large" @click="onLogin">Login</van-button>
         <div class="tis">Partner Entry</div>
       </div>
     </div>
@@ -56,6 +56,11 @@
     methods: {
       onChangeChecked(e) {
         this.checked = e.mp.detail;
+      },
+      onLogin(){
+        wx.switchTab({
+          url:'/pages/index/main'
+        })
       }
     }
 
