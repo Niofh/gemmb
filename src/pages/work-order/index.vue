@@ -60,12 +60,10 @@
     computed: {
       i18n() {
         return this.$t("message")
-      }
-    },
-    data() {
-      const i18n = this.$t("message")
-      return {
-        rows: [
+      },
+      rows() {
+        const i18n = this.$t("message")
+        return [
           {
             width: "27%",
             name: i18n.Priority,
@@ -86,7 +84,36 @@
             name: i18n.Status,
             isArrow: true
           }
-        ],
+        ]
+      },
+      changeRows(){
+        const i18n = this.$t("message")
+        return [
+          {
+            width: "27%",
+            name: i18n.TicketID,
+            isArrow: true
+          },
+          {
+            width: "30%",
+            name: i18n.Device,
+            isArrow: true
+          },
+          {
+            width: "20%",
+            name: i18n.Type,
+            isArrow: true
+          },
+          {
+            width: "23%",
+            name: i18n.Status,
+            isArrow: true
+          }
+        ]
+      }
+    },
+    data() {
+      return {
         cells: [
           {
             id: 1,
@@ -109,28 +136,6 @@
             date: "10000000000"
           }
 
-        ],
-        changeRows: [
-          {
-            width: "27%",
-            name: i18n.TicketID,
-            isArrow: true
-          },
-          {
-            width: "30%",
-            name: i18n.Device,
-            isArrow: true
-          },
-          {
-            width: "20%",
-            name: i18n.Type,
-            isArrow: true
-          },
-          {
-            width: "23%",
-            name: i18n.Status,
-            isArrow: true
-          }
         ],
         changeCells: [
           {
@@ -155,7 +160,6 @@
           }
 
         ]
-
       }
     }
 

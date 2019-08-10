@@ -26,16 +26,20 @@
   import myFooter from "@/components/my-footer"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
+
   export default {
     mixins: [myTableRowMixin],
     components: {
       "my-footer": myFooter,
       "my-table-row": myTableRow
     },
-    data() {
-      const i18n = this.$t('message')
-      return {
-        rows: [
+    computed: {
+      i18n() {
+        return this.$t("message")
+      },
+      rows() {
+        const i18n = this.$t("message")
+        return [
           {
             width: "22%",
             name: i18n.Status,
@@ -79,7 +83,11 @@
             name: i18n.location,
             isArrow: true
           }
-        ],
+        ]
+      }
+    },
+    data() {
+      return {
         cells: [
           {
             id: 1,

@@ -4,14 +4,20 @@
     <div class="table-wrap">
       <my-table-row :rows="rows"></my-table-row>
       <div class="my-table-cell" v-for="c in cells" :key="c.id" :class="c.color">
-        <div class="my-cell-item" :style="{'width':rows[0].width}"><div class="left">{{c.ip}}</div></div>
+        <div class="my-cell-item" :style="{'width':rows[0].width}">
+          <div class="left">{{c.ip}}</div>
+        </div>
         <div class="my-cell-item" :style="{'width':rows[1].width}">
           <div class="left ">
-          {{c.ip}}
+            {{c.ip}}
+          </div>
         </div>
+        <div class="my-cell-item" :style="{'width':rows[2].width}">
+          <div class="left ">P1</div>
         </div>
-        <div class="my-cell-item" :style="{'width':rows[2].width}"><div class="left ">P1</div></div>
-        <div class="my-cell-item" :style="{'width':rows[3].width}"><div class="left">{{c.status}}</div></div>
+        <div class="my-cell-item" :style="{'width':rows[3].width}">
+          <div class="left">{{c.status}}</div>
+        </div>
       </div>
     </div>
 
@@ -60,31 +66,29 @@
 </template>
 
 <script>
-  import myToggle from '@/components/my-toggle'
-  import myTable from '@/components/my-table-row'
-  import myTableRow from '@/components/my-table-row/index.vue'
-  import myDescItem from "@/components/my-desc-item/index.vue";
+  import myToggle from "@/components/my-toggle"
+  import myTable from "@/components/my-table-row"
+  import myTableRow from "@/components/my-table-row/index.vue"
+  import myDescItem from "@/components/my-desc-item/index.vue"
 
   export default {
-    components:{
+    components: {
       "my-desc-item": myDescItem,
       "my-table": myTable,
-      'my-table-row': myTableRow,
-      'my-toggle': myToggle,
+      "my-table-row": myTableRow,
+      "my-toggle": myToggle
     },
     computed: {
       i18n() {
         return this.$t("message")
-      }
-    },
-    data() {
-      const i18n = this.$t('message')
-      return {
-        rows: [
+      },
+      rows() {
+        const i18n = this.$t("message")
+        return [
           {
             width: "27%",
             name: i18n.Priority,
-            isArrow: true,
+            isArrow: true
           },
           {
             width: "27%",
@@ -101,35 +105,38 @@
             name: i18n.Status,
             isArrow: true
           }
-        ],
-        cells:[
+        ]
+      }
+    },
+    data() {
+      return {
+        cells: [
           {
-            id:1,
-            color:"history",
-            ip:'192.168.1.1',
-            place:'上海',
-            type:'故障',
-            you:"p1",
-            status:"open",
-            date:"10000000000",
+            id: 1,
+            color: "history",
+            ip: "192.168.1.1",
+            place: "上海",
+            type: "故障",
+            you: "p1",
+            status: "open",
+            date: "10000000000"
           },
           {
-            id:2,
-            color:"critical",
-            ip:'192.168.1.1',
-            place:'上海',
-            type:'故障',
-            you:"p1",
-            status:"open",
-            date:"10000000000",
-          },
+            id: 2,
+            color: "critical",
+            ip: "192.168.1.1",
+            place: "上海",
+            type: "故障",
+            you: "p1",
+            status: "open",
+            date: "10000000000"
+          }
 
-        ],
-
-      };
+        ]
+      }
     }
 
-  };
+  }
 </script>
 
 <style lang="stylus" scoped>

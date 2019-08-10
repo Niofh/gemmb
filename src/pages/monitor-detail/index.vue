@@ -106,12 +106,10 @@
     computed: {
       i18n() {
         return this.$t("message")
-      }
-    },
-    data() {
-      const i18n = this.$t("message")
-      return {
-        rows: [
+      },
+      rows(){
+        const i18n = this.$t("message")
+        return  [
           {
             width: "22%",
             name: i18n.IP,
@@ -137,7 +135,11 @@
             name: i18n.Time,
             isArrow: true
           }
-        ],
+        ]
+      }
+    },
+    data() {
+      return {
         cells: [
           {
             id: 1,
