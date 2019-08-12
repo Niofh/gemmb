@@ -10,9 +10,10 @@
            src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3359634383,540379162&fm=26&gp=0.jpg" alt="bg">
       <div class="login-wrap">
         <van-field
-          :value="username"
+          :value="form.Identity"
           clearable
           placeholder="Please input username"
+          @change="onChangeUserName"
         >
           <img class="username-icon" slot="left-icon" src="/static/images/username.png" alt="">
         </van-field>
@@ -22,6 +23,7 @@
           type="password"
           clearable
           placeholder="Please input password"
+          @change="onChangePwd"
         >
           <img class="username-icon" slot="left-icon" src="/static/images/pwd.png" alt="">
         </van-field>
@@ -34,6 +36,8 @@
             @change="onChangeChecked"
           >
             remember username and password
+            {{userInfo.aa}}
+
           </van-checkbox>
         </div>
         <van-button type="danger" size="large" @click="onLogin">Login</van-button>
@@ -41,30 +45,90 @@
       </div>
     </div>
     <div class="copyright">Copyright © 2019 logicalis.com.ALL rights reservd.</div>
+    <van-toast id="van-toast"/>
   </div>
 </template>
 
 <script>
+  import Toast from "@/../static/vant/toast/toast"
+
   export default {
     data() {
       return {
-        username: "",
-        password: "",
-        checked: false
-      };
+        password: "test@135",
+        checked: false,
+        form: {
+          Identity: "test_public@demo", // 用户名
+          EncryptedPassword: "",
+          HashedPassword: "", // md5加密码
+          OneTimePassword: ""
+        }
+      }
+    },
+    computed: {
+      remember() {
+        return this.$store.state.remember
+      },
+      userInfo() {
+        return this.$store.state.userInfo
+      }
+    },
+    mounted() {
+      const userInfo = this.$store.state.userInfo
+      console.log("userInfo", userInfo)
+      const len = Object.keys(userInfo)
+      console.log("len", len)
+      if (len > 0) {
+        // 存在用户信息，表示有记住我功能
+        wx.switchTab({
+          url: "/pages/index/main"
+        })
+      }
     },
     methods: {
-      onChangeChecked(e) {
-        this.checked = e.mp.detail;
+      onChangeUserName(event) {
+        this.form.Identity = event.mp.detail
       },
-      onLogin(){
-        wx.switchTab({
-          url:'/pages/index/main'
+      onChangePwd(event) {
+        this.password = event.mp.detail
+      },
+      onChangeChecked(e) {
+        this.checked = e.mp.detail
+      },
+      onLogin() {
+        if (!this.form.Identity) {
+          Toast("UserName Required")
+          return
+        }
+        if (!this.password) {
+          Toast("Password Required")
+          return
+        }
+        Toast.loading({
+          mask: true,
+          message: "loading..."
         })
+        this.form.HashedPassword = this.$md5(this.password)
+        this.$store.commit("setRemember", this.checked)
+        this.$fly.post("/Api/Security/AccessTokens", this.form)
+          .then((res) => {
+            console.log(res)
+            if (this.checked) {
+              // 记住我，保存到缓存
+              this.$store.commit("setUserInfo", res.data)
+              this.$store.commit("setRemember", true)
+            }
+            wx.switchTab({
+              url: "/pages/index/main"
+            })
+          })
+          .finally(() => {
+            Toast.clear()
+          })
       }
     }
 
-  };
+  }
 </script>
 <style lang="stylus">
   @import "~@/assets/stylus/common.styl"
@@ -73,6 +137,7 @@
       .van-checkbox__icon--round {
         transform scale(0.8)
       }
+
       .label {
         font-size rpx(28)
       }
@@ -113,19 +178,23 @@
         left: 50%
         transform translate(-50%, -50%)
         background-color #fff
+
         .blcok {
           height rpx(20)
         }
+
         .username-icon, .pws-icon {
           margin-right rpx(18)
           width rpx(40)
           height rpx(40)
         }
+
         .checkbox {
           margin-top rpx(30)
           margin-left rpx(30)
           margin-bottom rpx(50)
         }
+
         .tis {
           margin-top rpx(50)
           font-size: rpx(24);

@@ -50,7 +50,7 @@ module.exports = {
     // Set to `true` or `false` to always turn it on or off
     bundleAnalyzerReport: process.env.npm_config_report,
     fileExt: fileExt,
-    ajaxBaseUrl:"http://www.baidu.com"
+    ajaxBaseUrl:"https://logicalisservice.com"
   },
   dev: {
     env: require('./dev.env'),
@@ -67,6 +67,6 @@ module.exports = {
     // just be aware of this issue when enabling this option.
     cssSourceMap: false,
     fileExt: fileExt,
-    ajaxBaseUrl:"http://www.baidu.com"
+    ajaxBaseUrl:"https://logicalisservice.com"
   }
 }

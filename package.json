@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "flyio": "^0.6.1",
+    "js-md5": "^0.7.3",
     "mpvue": "^2.0.6",
     "qs": "^6.7.0",
     "vant-weapp": "^0.5.17",

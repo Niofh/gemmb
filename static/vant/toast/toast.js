@@ -18,6 +18,7 @@ function parseOptions(message) {
 }
 function getContext() {
     const pages = getCurrentPages();
+    console.log(pages)
     return pages[pages.length - 1];
 }
 function Toast(toastOptions) {

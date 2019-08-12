@@ -7,6 +7,11 @@
     onShow(){
       wx.hideTabBar({})
       console.log("app onShow")
+
+
+    },
+    onUnload(){
+      console.log('onUnload')
     }
   };
 
