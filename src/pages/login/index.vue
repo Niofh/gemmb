@@ -73,10 +73,10 @@
         return this.$store.state.userInfo
       }
     },
-    mounted() {
+    onShow() {
       const userInfo = this.$store.state.userInfo
       console.log("userInfo", userInfo)
-      const len = Object.keys(userInfo)
+      const len = Object.keys(userInfo).length
       console.log("len", len)
       if (len > 0) {
         // 存在用户信息，表示有记住我功能

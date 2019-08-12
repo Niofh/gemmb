@@ -36,6 +36,7 @@ export default new Vuex.Store({
           const vuex = JSON.parse(store)
           if (!vuex.remember) { // 如果没有点击记住我，清空用户信息
             vuex.userInfo = {}
+            vuex.remember = false
             wx.setStorageSync("vuex", JSON.stringify(vuex))
           }
         }
