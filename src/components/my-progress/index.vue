@@ -2,7 +2,7 @@
   <div class="my-progress-wrap">
     <div class="header-progress">
       <div class="left">
-        <slot></slot>
+       <slot></slot>
       </div>
       <div class="right">
           {{rightText}}
@@ -26,6 +26,10 @@
     props: {
       // 右边内容
       rightText:{
+        type:String,
+        default:""
+      },
+      leftText:{
         type:String,
         default:""
       },

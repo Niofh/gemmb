@@ -3,7 +3,7 @@
 
     <div class="header">{{i18n.devicesSummary}}</div>
     <div class="progress-list">
-      <my-progress :bg-color="bgColor" :critical="10" :total="60" right-text="1/60">
+      <my-progress  :bg-color="bgColor" :critical="10" :total="60" right-text="1/60">
         Critical
       </my-progress>
       <my-progress :bg-color="bgColor" right-text="1/10" :warning="1" :total="10">
@@ -82,12 +82,20 @@
     computed: {
       i18n() {
         return this.$t("message")
+      },
+      customerTag() {
+        return this.$store.state.userInfo.CustomerTag
       }
     },
     data() {
       return {
-        bgColor: "#0CC808"
+        bgColor: "#0CC808",
+        devices:[] // 设备总数
       }
+    },
+    mounted() {
+      console.log(this.customerTag, "===================================")
+      this.getDevicesTotal()
     },
     methods: {
       onChangeSelect(e) {
@@ -100,6 +108,14 @@
       },
       onHide() {
         this.check = false
+      },
+      // 获取设备总数
+      getDevicesTotal() {
+        this.$fly.get(`Api/Nms/Customers/${this.customerTag}/DeviceStatus`).then(res => {
+          if (res && res.length > 0) {
+              this.devices = res
+          }
+        })
       }
     }
 

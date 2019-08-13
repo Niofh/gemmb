@@ -1,6 +1,7 @@
 const Fly = require("flyio/dist/npm/wx")
 import qs from "qs"
 import { ajaxBaseUrl } from "../config"
+import store from '@/store'
 // https://wendux.github.io/dist/#/doc/flyio/interceptor 文档
 const fly = new Fly()
 
@@ -14,6 +15,7 @@ fly.config.baseURL = ajaxBaseUrl
 
 // 定义公共headers
 fly.config.headers["Content-Type"] = "application/json;charset=UTF-8"
+fly.config.headers["AccessToken"] = store.state.userInfo.AccessToken
 
 
 //添加请求拦截器
