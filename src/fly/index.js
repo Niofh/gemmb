@@ -42,26 +42,36 @@ fly.interceptors.response.use(
     return response.data
   },
   (err) => {
-    console.log(err.status)
+    console.log(err)
+    const res = err.response.data
     //发生网络错误后会走到这里
-    if (err.status === 100) {
-      wx.showModal({
-        title: '提示',
-        content: '登录信息已过期，请重新登录',
-        success (res) {
-          if (res.confirm) {
-            wx.switchTab({
-              url: "/pages/login/main"
-            })
-          } else if (res.cancel) {
-            console.log('用户点击取消')
+    if (err.status === 401) {
+      if (res.ExceptionType === 2) {
+        wx.showToast({
+          title: res.Message,
+          icon: "none",
+          duration: 2000
+        })
+      } else {
+        wx.showModal({
+          title: "提示",
+          content: "登录信息已过期，请重新登录",
+          success(res) {
+            if (res.confirm) {
+              wx.switchTab({
+                url: "/pages/login/main"
+              })
+            } else if (res.cancel) {
+              console.log("用户点击取消")
+            }
           }
-        }
-      })
+        })
+      }
+
     } else {
       wx.showToast({
-        title: '系统异常',
-        icon: 'none',
+        title: res.Message,
+        icon: "none",
         duration: 2000
       })
 

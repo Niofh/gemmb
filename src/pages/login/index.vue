@@ -51,6 +51,7 @@
 
 <script>
   import Toast from "@/../static/vant/toast/toast"
+  import { stringToByte } from "@/utils"
 
   export default {
     data() {
@@ -108,19 +109,35 @@
           mask: true,
           message: "loading..."
         })
-        this.form.HashedPassword = this.$md5(this.password)
+
+
+        // md5加密
+        const md5 = this.$md5.create()
+        md5.update(this.password)
+        const digest = md5.digest()
+        const ret = `{MD5}` + md5.base64(digest)
+
+        this.form.HashedPassword = ret
+
         this.$store.commit("setRemember", this.checked)
+
+
         this.$fly.post("/Api/Security/AccessTokens", this.form)
           .then((res) => {
-            console.log(res)
-            if (this.checked) {
-              // 记住我，保存到缓存
-              this.$store.commit("setUserInfo", res.data)
-              this.$store.commit("setRemember", true)
+            if (res) {
+              console.log(res)
+              if (this.checked) {
+                // 记住我，保存到缓存
+                this.$store.commit("setUserInfo", res)
+                this.$store.commit("setRemember", true)
+              }
+              wx.switchTab({
+                url: "/pages/index/main"
+              })
             }
-            wx.switchTab({
-              url: "/pages/index/main"
-            })
+          })
+          .catch(err=>{
+
           })
           .finally(() => {
             Toast.clear()
