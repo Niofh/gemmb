@@ -43,7 +43,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 4,
+			"current": 5,
 			"list": [
 				{
 					"id": -1,
@@ -76,6 +76,13 @@
 					"id": -1,
 					"name": "工单详情页",
 					"pathName": "pages/work-order-detail/main",
+					"query": "",
+					"scene": null
+				},
+				{
+					"id": -1,
+					"name": "监控页",
+					"pathName": "pages/monitor/main",
 					"scene": null
 				}
 			]

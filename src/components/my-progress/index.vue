@@ -26,7 +26,7 @@
     props: {
       // 右边内容
       rightText: {
-        type: String,
+        type: [String,Number],
         default: ""
       },
       // 左边内容

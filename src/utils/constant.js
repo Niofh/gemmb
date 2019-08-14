@@ -15,43 +15,54 @@ export const SeverityStatus = {
 export const Severity = {
   Critical: {
     color: "#d9534f",
-    code:0
+    code: 0
   },
   Major: {
     color: "#F0AD4E",
-    code:1
+    code: 1
   },
   Minor: {
     color: "#E9d310",
-    code:2
+    code: 2
   },
   Warning: {
     color: "#31B0D5",
-    code:3
+    code: 3
   },
   Normal: {
     color: "#5cb85c",
-    code:4
+    code: 4
   },
   Informational: {
     color: "#C0C0C0",
-    code:5
+    code: 5
   },
   Calculating: {
     color: "#9370DB",
-    code:6
+    code: 6
   },
   Symptom: {
     color: "#D3D3D3",
-    code:7
+    code: 7
   },
   Unknown: {
     color: "#A9A9A9",
-    code:8
+    code: 8
   },
   Monitoring: {
     color: "#6495ed",
-    code:9
+    code: 9
   },
 
 }
+
+
+export const selectOptions = [];
+
+for (let key of Object.keys(Severity)) {
+  selectOptions.push({
+    name: key,
+    id: Severity[key].code
+  })
+}
+

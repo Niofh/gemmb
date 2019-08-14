@@ -52,7 +52,7 @@ fly.interceptors.response.use(
         wx.showToast({
           title: res.Message,
           icon: "none",
-          duration: 2000
+          duration: 4000
         })
       } else {
         wx.showModal({
@@ -74,7 +74,7 @@ fly.interceptors.response.use(
       wx.showToast({
         title: res.Message,
         icon: "none",
-        duration: 2000
+        duration: 4000
       })
 
     }

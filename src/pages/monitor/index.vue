@@ -16,22 +16,26 @@
           <div class="left">{{c.place}}</div>
         </div>
       </div>
+      <my-pagination :pages="10"></my-pagination>
     </div>
     <div class="station"></div>
-    <my-footer :active="1"/>
+    <my-footer :active="1" />
   </div>
 </template>
 
 <script>
   import myFooter from "@/components/my-footer"
   import myTableRow from "@/components/my-table-row/index.vue"
+  import myPagination from "@/components/my-pagination"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
+  import {selectOptions} from "../../utils/constant";
 
   export default {
     mixins: [myTableRowMixin],
     components: {
       "my-footer": myFooter,
-      "my-table-row": myTableRow
+      "my-table-row": myTableRow,
+      "my-pagination": myPagination,
     },
     computed: {
       i18n() {
@@ -44,29 +48,7 @@
             width: "22%",
             name: i18n.Status,
             isArrow: true,
-            selectOptions: [
-              {
-                id: 1,
-                name: "Critical"
-              },
-              {
-                id: 2,
-                name: "Major"
-              },
-              {
-                id: 3,
-                name: "Minor"
-              },
-              {
-                id: 4,
-                name: "Warining"
-              },
-              {
-                id: 5,
-                name: "Normal"
-              }
-
-            ]
+            selectOptions: selectOptions.slice(0, 5)
           },
           {
             width: "28%",
