@@ -2,19 +2,19 @@
   <div class="my-progress-wrap">
     <div class="header-progress">
       <div class="left">
-       <slot></slot>
+        {{leftText}}
       </div>
       <div class="right">
-          {{rightText}}
+        {{rightText}}
       </div>
     </div>
     <!--进度条-->
     <div class="my-progress" :style="{'backgroundColor': bgColor}">
-      <div class="process critical" :style="{width: (critical/total*100)+'%'}"></div>
-      <div class="process warning" :style="{width: (warning/total*100)+'%'}"></div>
-      <div class="process minor" :style="{width: (minor/total*100)+'%'}"></div>
-      <div class="process major" :style="{width: (major/total*100)+'%'}"></div>
-      <div class="process normal" :style="{width: (normal/total*100)+'%'}"></div>
+      <div class="process" :style="{width: (number/total*100)+'%',backgroundColor: processColor}"></div>
+      <!--      <div class="process warning" :style="{width: (warning/total*100)+'%'}"></div>-->
+      <!--      <div class="process minor" :style="{width: (minor/total*100)+'%'}"></div>-->
+      <!--      <div class="process major" :style="{width: (major/total*100)+'%'}"></div>-->
+      <!--      <div class="process normal" :style="{width: (normal/total*100)+'%'}"></div>-->
     </div>
   </div>
 
@@ -25,31 +25,16 @@
     name: "my-progress",
     props: {
       // 右边内容
-      rightText:{
-        type:String,
-        default:""
+      rightText: {
+        type: String,
+        default: ""
       },
-      leftText:{
-        type:String,
-        default:""
+      // 左边内容
+      leftText: {
+        type: String,
+        default: ""
       },
-      critical: {
-        type: Number,
-        default: 0
-      },
-      warning: {
-        type: Number,
-        default: 0
-      },
-      minor: {
-        type: Number,
-        default: 0
-      },
-      major: {
-        type: Number,
-        default: 0
-      },
-      normal: {
+      number: {
         type: Number,
         default: 0
       },
@@ -60,33 +45,41 @@
       bgColor: { // 默认背景颜色
         type: String,
         default: "#CCCCCC"
+      },
+      processColor: { // 进度条颜色
+        type: String,
+        default: "#CCCCCC"
       }
     }
-  };
+  }
 </script>
 
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"
-  .my-progress-wrap{
+  .my-progress-wrap {
     margin-bottom rpx(30)
   }
-  .header-progress{
+
+  .header-progress {
     margin-bottom rpx(14)
     overflow hidden
-    .left{
+
+    .left {
       float left
-      font-size:rpx(25);
-      font-weight:500;
+      font-size: rpx(25);
+      font-weight: 500;
       color #333
     }
-    .right{
+
+    .right {
       float right
       text-align right
-      font-size:rpx(24);
-      font-weight:500;
-      color:#666;
+      font-size: rpx(24);
+      font-weight: 500;
+      color: #666;
     }
   }
+
   .my-progress {
     width 100%
     height: rpx(16);
@@ -98,35 +91,7 @@
       float left
       height: 100%
 
-      &.critical {
-        background-color $critical
-      }
-
-      &.warning {
-        background-color $warning
-      }
-
-      &.minor {
-        background-color $minor
-      }
-
-      &.major {
-        background-color $major
-      }
-
-      &.normal {
-        background-color $normal
-      }
     }
 
-    .process-1 {
-      width 10%
-      background-color red
-    }
-
-    .process-2 {
-      width 20%
-      background-color blue
-    }
   }
 </style>
