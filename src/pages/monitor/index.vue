@@ -2,24 +2,24 @@
   <div class="monitor" @click="pageClick">
     <div class="table-wrap">
       <my-table-row :rows="rows" :is-show-select.sync="isShowSelect"></my-table-row>
-      <div class="my-table-cell" v-for="c in deviceList" :key="c.DeviceId" :style="{'backgroundColor':Severity[SeverityStatus[c.Severity]].color}" >
+      <div class="my-table-cell"
+           v-for="c in deviceList"
+           :key="c.DeviceId"
+           :style="{'backgroundColor':Severity[SeverityStatus[c.Severity]].color}">
         <div class="my-cell-item" :style="{'width':rows[0].width}">
-          <div class="left" >{{SeverityStatus[c.Severity]}}</div>
+          <div class="left">{{SeverityStatus[c.Severity]}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[1].width}">
-          <div class="left " ><a class="link" href="/pages/monitor-detail/main">{{c.DeviceName}}</a></div>
+          <div class="left "><a class="link" href="/pages/monitor-detail/main">{{c.DeviceName}}</a></div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[2].width}">
-          <div class="left "  >{{c.IPAddress|| '--'}}</div>
+          <div class="left ">{{c.IPAddress|| '--'}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[3].width}">
-          <div class="left" >{{c.LocationName}}</div>
+          <div class="left">{{c.LocationName}}</div>
         </div>
       </div>
-      <van-popup :show="show" position="top" custom-class="popup-class" >
-        <van-search :value="value" placeholder="请输入搜索关键词" />
-      </van-popup>
-<!--      <my-pagination :pages="10"></my-pagination>-->
+      <!--      <my-pagination :pages="10"></my-pagination>-->
     </div>
     <div class="station"></div>
     <my-footer :active="1" />
@@ -75,23 +75,21 @@
     },
     data() {
       return {
-        show:false,
-        value:'',
-        deviceList:[],
-        Severity:Severity,
-        SeverityStatus:SeverityStatus,
+        deviceList: [],
+        Severity: Severity,
+        SeverityStatus: SeverityStatus,
       }
     },
-    mounted(){
+    mounted() {
       this.getDeviceList()
     },
     methods: {
       // 获取设备列表
-      getDeviceList(){
-        this.$fly.get(`Api/Nms/Customers/${this.customerTag}/DeviceStatus`).then(res=>{
-            if(res&&res.length){
-              this.deviceList = res
-            }
+      getDeviceList() {
+        this.$fly.get(`Api/Nms/Customers/${this.customerTag}/DeviceStatus`).then(res => {
+          if (res && res.length) {
+            this.deviceList = res
+          }
         })
       }
     }
@@ -99,7 +97,7 @@
   }
 </script>
 <style lang="stylus">
-  .popup-class{
+  .popup-class {
 
   }
 </style>

@@ -66,3 +66,33 @@ for (let key of Object.keys(Severity)) {
   })
 }
 
+
+// 故障状态
+export const BUG_STATUS_CODE = {
+  0: 'Registered',
+  1: 'InProgress',
+  2: 'PendingCustomer',
+  3: 'PendingSupplier',
+  4: 'Resolved',
+  5: 'Closed'
+}
+
+// 变更工单类型
+export const CHANGE_TYPE_CODE = {
+  0: 'Standard',
+  1: 'Normal',
+  2: 'Emergency',
+}
+// 变更工单类型
+export const CHANGE_STATUS_CODE = {
+  0: 'Unapproved',
+  1: 'Approved',
+  2: 'Rejected',
+  3: 'Completed',
+  4: 'Withdrawn',
+  5: 'Aborted',
+  6: 'Started',
+  7: 'Ended',
+}
+
+
