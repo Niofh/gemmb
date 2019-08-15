@@ -29,17 +29,17 @@
 
     <div class="header">{{i18n.ticketSummary}}</div>
     <div class="progress-list">
-      <my-progress :critical="10" :total="60" right-text="1">
-        P1
+      <my-progress  :number="work.p1" :total="workTotal" left-text="p1" :right-text="work.p1" process-color="#E60012" >
+
       </my-progress>
-      <my-progress right-text="1" :warning="1" :total="10">
-        P2
+      <my-progress left-text="P2" :right-text="work.p2"  process-color="#448ACA"  :number="work.p2" :total="workTotal">
+
       </my-progress>
-      <my-progress right-text="1" :minor="1" :total="10">
-        P3
+      <my-progress left-text="P3" :right-text="work.p3" process-color="#E9d310" :number="work.p3" :total="workTotal">
+
       </my-progress>
-      <my-progress right-text="1" :major="1" :total="10">
-        P4
+      <my-progress left-text="P4" :right-text="work.p4" process-color="#F39800"  :number="work.p4" :total="workTotal">
+
       </my-progress>
 
     </div>
@@ -53,7 +53,7 @@
 <script>
   import myFooter from "@/components/my-footer/index.vue"
   import myProgress from "@/components/my-progress/index.vue"
-  import {Severity, SeverityStatus} from "@/utils/constant"
+  import { Severity, SeverityStatus } from "@/utils/constant"
 
   export default {
     onShow() {
@@ -91,6 +91,13 @@
           }
         },
         waringTotal: 0,
+        work: {
+          p1: 0,
+          p2: 0,
+          p3: 0,
+          p4: 0
+        },
+        workTotal: 0,
         severityStatus: SeverityStatus
       }
     },
@@ -147,10 +154,31 @@
         })
       },
       // 获取工单总结
-      getWorkTotal(){
-        this.$fly.post(`Api/ServiceDesk/Customers/${this.customerTag}/TicketSearch`,{customerTag:this.customerTag}).then(res=>{
-          if (res && res.length > 0) {
-
+      getWorkTotal() {
+        this.$fly.post(`Api/ServiceDesk/Customers/${this.customerTag}/TicketSearch`, {
+          "TicketSearchFields": [],
+          "TicketTypes": [0, 1, 2, 3],
+          "ChangeTypes": [0, 1, 2],
+          "TicketStatuses": [0, 1, 2],
+          "Priorities": [1, 2, 3, 4]
+        }).then(res => {
+          if (res.TicketSearchResults && res.TicketSearchResults.length > 0) {
+            res.TicketSearchResults.forEach(item => {
+              if (item.Priority === 1) {
+                this.work.p1++
+              }
+              else if (item.Priority === 2) {
+                this.work.p2++
+              }
+              else if (item.Priority === 3) {
+                this.work.p3++
+              }
+              else if (item.Priority === 4) {
+                this.work.p4++
+              }
+            })
+            this.workTotal = res.TicketSearchResults.length
+            console.log(this.workTotal)
           }
         })
       }

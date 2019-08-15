@@ -1,7 +1,7 @@
 const Fly = require("flyio/dist/npm/wx")
 import qs from "qs"
 import { ajaxBaseUrl } from "../config"
-import store from '@/store'
+import store from "@/store"
 // https://wendux.github.io/dist/#/doc/flyio/interceptor 文档
 const fly = new Fly()
 
@@ -15,7 +15,7 @@ fly.config.baseURL = ajaxBaseUrl
 
 // 定义公共headers
 fly.config.headers["Content-Type"] = "application/json;charset=UTF-8"
-fly.config.headers["AccessToken"] = store.state.userInfo.AccessToken
+console.log("wx.getStorageSync", wx.getStorageSync("vuex"))
 
 
 //添加请求拦截器
@@ -24,6 +24,10 @@ fly.interceptors.request.use((config) => {
   //给所有请求添加自定义header 比如token
   // request.headers["X-Tag"] = "flyio";
 
+  if (store.state.userInfo.AccessToken) {
+    config.headers["AccessToken"] = store.state.userInfo.AccessToken
+
+  }
   if (config.form === true) {
     // form表单请求
     config.headers["Content-Type"] = "application/x-www-form-urlencoded;charset=utf-8"
@@ -36,6 +40,7 @@ fly.interceptors.request.use((config) => {
   return config
 
 })
+
 
 //添加响应拦截器，响应拦截器会在then/catch处理之前执行
 fly.interceptors.response.use(
