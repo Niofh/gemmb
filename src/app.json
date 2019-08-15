@@ -21,7 +21,9 @@
     "van-field": "/static/vant/field/index",
     "van-icon": "/static/vant/icon/index",
     "van-button": "/static/vant/button/index",
-    "van-toast": "/static/vant/toast/index"
+    "van-toast": "/static/vant/toast/index",
+    "van-search": "/static/vant/search/index",
+    "van-popup": "/static/vant/popup/index"
 
   },
   "tabBar": {

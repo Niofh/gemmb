@@ -2,21 +2,24 @@
   <div class="monitor" @click="pageClick">
     <div class="table-wrap">
       <my-table-row :rows="rows" :is-show-select.sync="isShowSelect"></my-table-row>
-      <div class="my-table-cell" v-for="c in cells" :key="c.id" :class="c.status">
+      <div class="my-table-cell" v-for="c in deviceList" :key="c.DeviceId" :style="{'backgroundColor':Severity[SeverityStatus[c.Severity]].color}" >
         <div class="my-cell-item" :style="{'width':rows[0].width}">
-          <div class="left">{{c.status}}</div>
+          <div class="left" >{{SeverityStatus[c.Severity]}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[1].width}">
-          <div class="left "><a class="link" href="/pages/monitor-detail/main">{{c.shebei}}</a></div>
+          <div class="left " ><a class="link" href="/pages/monitor-detail/main">{{c.DeviceName}}</a></div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[2].width}">
-          <div class="left "><a class="link" href="/pages/monitor-detail/main">{{c.ip}}</a></div>
+          <div class="left "  >{{c.IPAddress|| '--'}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[3].width}">
-          <div class="left">{{c.place}}</div>
+          <div class="left" >{{c.LocationName}}</div>
         </div>
       </div>
-      <my-pagination :pages="10"></my-pagination>
+      <van-popup :show="show" position="top" custom-class="popup-class" >
+        <van-search :value="value" placeholder="请输入搜索关键词" />
+      </van-popup>
+<!--      <my-pagination :pages="10"></my-pagination>-->
     </div>
     <div class="station"></div>
     <my-footer :active="1" />
@@ -26,26 +29,28 @@
 <script>
   import myFooter from "@/components/my-footer"
   import myTableRow from "@/components/my-table-row/index.vue"
-  import myPagination from "@/components/my-pagination"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import {selectOptions} from "../../utils/constant";
+  import {selectOptions, Severity} from "@/utils/constant";
+  import {SeverityStatus} from "../../utils/constant";
 
   export default {
     mixins: [myTableRowMixin],
     components: {
       "my-footer": myFooter,
       "my-table-row": myTableRow,
-      "my-pagination": myPagination,
     },
     computed: {
       i18n() {
         return this.$t("message")
       },
+      customerTag() {
+        return this.$store.state.userInfo.CustomerTag
+      },
       rows() {
         const i18n = this.$t("message")
         return [
           {
-            width: "22%",
+            width: "20%",
             name: i18n.Status,
             isArrow: true,
             selectOptions: selectOptions.slice(0, 5)
@@ -56,7 +61,7 @@
             isArrow: true
           },
           {
-            width: "26%",
+            width: "28%",
             name: i18n.IP,
             isArrow: true
           },
@@ -70,50 +75,34 @@
     },
     data() {
       return {
-        cells: [
-          {
-            id: 1,
-            status: "normal",
-            shebei: "Aruba AC 620",
-            ip: "192.168.1.1",
-            place: "上海"
-          },
-          {
-            id: 2,
-            status: "history",
-            shebei: "Aruba AC 620",
-            ip: "192.168.1.1",
-            place: "上海"
-          },
-          {
-            id: 3,
-            status: "critical",
-            shebei: "Aruba AC 620",
-            ip: "192.168.1.1",
-            place: "上海"
-          },
-          {
-            id: 4,
-            status: "warning",
-            shebei: "Aruba AC 620",
-            ip: "192.168.1.1",
-            place: "上海"
-          },
-          {
-            id: 5,
-            status: "major",
-            shebei: "Aruba AC 620",
-            ip: "192.168.1.1",
-            place: "上海"
-          }
-
-        ]
+        show:false,
+        value:'',
+        deviceList:[],
+        Severity:Severity,
+        SeverityStatus:SeverityStatus,
       }
     },
-    methods: {}
+    mounted(){
+      this.getDeviceList()
+    },
+    methods: {
+      // 获取设备列表
+      getDeviceList(){
+        this.$fly.get(`Api/Nms/Customers/${this.customerTag}/DeviceStatus`).then(res=>{
+            if(res&&res.length){
+              this.deviceList = res
+            }
+        })
+      }
+    }
 
   }
 </script>
+<style lang="stylus">
+  .popup-class{
+
+  }
+</style>
 
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"

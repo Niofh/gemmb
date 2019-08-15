@@ -55,6 +55,8 @@
 
       .left {
         float left
+        word-wrap: break-word;
+        word-break: normal;
       }
 
       .right {
