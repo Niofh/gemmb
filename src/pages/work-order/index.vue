@@ -11,7 +11,7 @@
         </div>
         <div class="my-cell-item" :style="{'width':rows[1].width}">
           <div class="left ">
-            <a class="link" href="/pages/work-order-detail/main">{{c.TicketId}}</a>
+            <a class="link" :href="'/pages/work-order-detail/main?id='+c.TicketId+''">{{c.TicketId}}</a>
           </div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[2].width}">

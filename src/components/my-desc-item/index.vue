@@ -1,10 +1,11 @@
 <template>
   <div class="my-desc-item" :style="{'borderTopColor':borderColor}">
     <div class="my-desc-body">
-      <slot></slot>
+    {{text}}
     </div>
     <div class="my-desc-footer">
-      {{date}}
+      <spam class="left">{{date}}</spam>
+      <spam class="right">{{username}}</spam>
     </div>
   </div>
 </template>
@@ -19,7 +20,15 @@
       date:{
         type: String,
         default: ""
-      }
+      },
+      text:{
+        type: String,
+        default: ""
+      },
+      username:{
+        type: String,
+        default: ""
+      },
     }
   };
 </script>
@@ -36,15 +45,23 @@
 
     .my-desc-body {
       margin-bottom rpx(50)
-      font-size rpx(24)
+      font-size rpx(28)
       color: #333;
       line-height: rpx(36);
 
     }
 
     .my-desc-footer {
+      display flex
       color #666
-      font-size rpx(20)
+      font-size rpx(24)
+      .left{
+        flex 1
+      }
+      .right{
+        flex 1
+        text-align right
+      }
     }
   }
 </style>

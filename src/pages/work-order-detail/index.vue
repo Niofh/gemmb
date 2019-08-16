@@ -3,20 +3,23 @@
     <div class="header">{{i18n.faultTicket}}</div>
     <div class="table-wrap">
       <my-table-row :rows="rows"></my-table-row>
-      <div class="my-table-cell" v-for="c in cells" :key="c.id" :class="c.color">
+      <div class="my-table-cell"
+           :style="{'backgroundColor':bugWork.PriorityHtmlColor}">
         <div class="my-cell-item" :style="{'width':rows[0].width}">
-          <div class="left">{{c.ip}}</div>
+          <div class="left">
+            {{'P'+bugWork.Priority}}
+          </div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[1].width}">
           <div class="left ">
-            {{c.ip}}
+            {{bugWork.TicketId}}
           </div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[2].width}">
-          <div class="left ">P1</div>
+          <div class="left ">{{bugWork.DeviceName|| '--'}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[3].width}">
-          <div class="left">{{c.status}}</div>
+          <div class="left">{{BUG_STATUS_CODE[bugWork.IncidentState]}}</div>
         </div>
       </div>
     </div>
@@ -26,37 +29,32 @@
     <div class="mar-l-r-30 ">
 
       <my-toggle :left="i18n.ticketJounals">
+        <div>
+          <my-desc-item v-for="w in workLog"
+                        :key="w.CreatedUtc"
+                        border-color="#D59E0A"
+                        :text="w.Html||''"
+                        :date="w.time"
+                        :username="w.username"
+          >
 
-        <tempalte>
-          <my-desc-item date="2019-11-11 11:11:11">
-            Aruba Ac620设备状态从up变为down，ping包丢失100%，宕机时间180s。
           </my-desc-item>
-
-          <my-desc-item border-color="#0CE501" date="2019-11-11 11:11:11">
-            Aruba 11110设备状态从up变为down，ping包丢失100%，宕机时间180s。
-          </my-desc-item>
-
-        </tempalte>
+        </div>
       </my-toggle>
     </div>
 
     <div class="header">{{i18n.deviceAlarm}}</div>
     <div class="mar-l-r-30">
       <my-toggle :left="i18n.deviceAlarm">
-        <tempalte>
-          <my-desc-item date="2019-11-11 11:11:11">
-            Aruba Ac620设备状态从up变为down，ping包丢失100%，宕机时间180s。
+        <div>
+          <my-desc-item v-for="d in deviceList" :key="d.DeviceLocalTime" :border-color="d.SeverityHtmlColor"
+                        :text="d.Notes"
+                        :date=d.time>
+
           </my-desc-item>
 
-          <my-desc-item border-color="#0CE501" date="2019-11-11 11:11:11">
-            Aruba 11110设备状态从up变为down，ping包丢失100%，宕机时间180s。
-          </my-desc-item>
 
-          <my-desc-item border-color="#0CE501" date="2019-11-11 11:11:11">
-            Aruba 11110设备状态从up变为down，ping包丢失100%，宕机时间180s。
-          </my-desc-item>
-
-        </tempalte>
+        </div>
 
       </my-toggle>
     </div>
@@ -70,6 +68,8 @@
   import myTable from "@/components/my-table-row"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myDescItem from "@/components/my-desc-item/index.vue"
+  import {BUG_STATUS_CODE} from "../../utils/constant";
+  import {formatTime} from "../../utils";
 
   export default {
     components: {
@@ -82,11 +82,14 @@
       i18n() {
         return this.$t("message")
       },
+      customerTag() {
+        return this.$store.state.userInfo.CustomerTag
+      },
       rows() {
         const i18n = this.$t("message")
         return [
           {
-            width: "27%",
+            width: "23%",
             name: i18n.Priority,
             isArrow: true
           },
@@ -101,41 +104,82 @@
             isArrow: true
           },
           {
-            width: "21%",
+            width: "25%",
             name: i18n.Status,
             isArrow: true
           }
         ]
-      }
+      },
     },
     data() {
       return {
-        cells: [
-          {
-            id: 1,
-            color: "history",
-            ip: "192.168.1.1",
-            place: "上海",
-            type: "故障",
-            you: "p1",
-            status: "open",
-            date: "10000000000"
-          },
-          {
-            id: 2,
-            color: "critical",
-            ip: "192.168.1.1",
-            place: "上海",
-            type: "故障",
-            you: "p1",
-            status: "open",
-            date: "10000000000"
-          }
-
-        ]
+        bugWork: {},
+        BUG_STATUS_CODE,
+        workLog: [],
+        deviceList: []
       }
-    }
+    },
+    mounted() {
+      const tickId = Number(this.$root.$mp.query.id) || ''
+      this.getBusWork(tickId)
+      this.getWorkLog(tickId)
 
+    },
+    methods: {
+      // 获取故障工单
+      getBusWork(ticketId) {
+        const _this = this
+        this.$fly.get(` Api/ServiceDesk/Tickets/${ticketId}`).then(res => {
+          this.bugWork = res
+          _this.getDeviceLog(ticketId)
+        })
+
+
+      },
+
+
+      // 获取工单日志
+      getWorkLog(tickId) {
+        this.$fly.get(`Api/ServiceDesk/Tickets/${tickId}/TicketJournals`).then(res => {
+          if (res && res.length > 0) {
+            this.workLog = res.map(item => {
+              const {t1, t2} = formatTime(new Date(item.CreatedUtc))
+              const username = item.CreatedBy.Name + `[${item.CreatedBy.CustomerTag}]`
+              return {
+                ...item,
+                time: t1 + ' ' + t2,
+                username
+              }
+            })
+          }
+        })
+      },
+      getDeviceLog(ticketId) {
+        this.$fly.post(`Api/Nms/Tickets/${ticketId}/Alerts`, {
+          "Page": 1,
+          "PageSize": 500
+        }).then(t => {
+          t.DeviceAlertItems.forEach(item => {
+            if (item.TicketId === ticketId) {
+              this.bugWork.DeviceName = item.DeviceName
+            }
+            this.deviceList = t.DeviceAlertItems.map(item=>{
+              const {t1, t2} = formatTime(new Date(item.DeviceLocalTime))
+              const username = item.DeviceName
+              return {
+                ...item,
+                time: t1 + ' ' + t2,
+                username:username
+              }
+            })
+          })
+        })
+      }
+
+    },
+    onUnload() {
+      this.bugWorkList = []
+    }
   }
 </script>
 
