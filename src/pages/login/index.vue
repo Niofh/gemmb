@@ -2,12 +2,12 @@
   <div class="login">
     <div class="logo-wrap">
       <img class="logo"
-           src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3359634383,540379162&fm=26&gp=0.jpg"
+           src="https://wechat.logicalisservice.com/images/logo.png"
            alt="logo">
     </div>
     <div class="bg-wrap">
       <img class="bg"
-           src="https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3359634383,540379162&fm=26&gp=0.jpg" alt="bg">
+           src="https://wechat.logicalisservice.com/images/loginbg.png" alt="bg">
       <div class="login-wrap">
         <van-field
           :value="form.Identity"
@@ -15,7 +15,7 @@
           placeholder="Please input username"
           @change="onChangeUserName"
         >
-          <img class="username-icon" slot="left-icon" src="/static/images/username.png" alt="">
+          <img class="username-icon" slot="left-icon" src="https://wechat.logicalisservice.com/images/username.png" alt="">
         </van-field>
         <div class="blcok"></div>
         <van-field
@@ -25,7 +25,7 @@
           placeholder="Please input password"
           @change="onChangePwd"
         >
-          <img class="username-icon" slot="left-icon" src="/static/images/pwd.png" alt="">
+          <img class="username-icon" slot="left-icon" src="https://wechat.logicalisservice.com/images/pwd.png" alt="">
         </van-field>
 
         <div class="checkbox">
@@ -36,7 +36,6 @@
             @change="onChangeChecked"
           >
             remember username and password
-            {{userInfo.aa}}
 
           </van-checkbox>
         </div>
@@ -51,7 +50,6 @@
 
 <script>
   import Toast from "@/../static/vant/toast/toast"
-  import { stringToByte } from "@/utils"
 
   export default {
     data() {
@@ -76,7 +74,6 @@
     },
     onShow() {
       const userInfo = this.$store.state.userInfo
-      console.log("userInfo", userInfo)
       const len = Object.keys(userInfo).length
       console.log("len", len)
       if (len > 0) {

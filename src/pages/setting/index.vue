@@ -18,7 +18,7 @@
       </van-action-sheet>
     </div>
     <div class="select-lang-wrap" @click="show=true">
-      <img class="img" src="/static/images/map.png" alt="maps">
+      <img class="img" src="https://wechat.logicalisservice.com/images/map.png" alt="maps">
       {{i18n.Language}}
       <span class="right">{{i18n.lang}}</span>
     </div>
