@@ -74,6 +74,7 @@
     },
     onShow() {
       const userInfo = this.$store.state.userInfo
+      console.log('userInfo',userInfo)
       const len = Object.keys(userInfo).length
       console.log("len", len)
       if (len > 0) {
