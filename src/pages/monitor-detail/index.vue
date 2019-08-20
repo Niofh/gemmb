@@ -21,23 +21,43 @@
 
     <div class="order-id">{{i18n.AssociatedTicketID}} : <a class="link" href="">12131215</a></div>
     <div class="header">{{i18n.performanceManagement}}</div>
-    <div class="progress-list">
-      <my-progress :critical="10" :total="60" bg-color="#0CC808">
-        ping
-        <icon class="icon" type="cancel" size="18"/>
-      </my-progress>
-      <my-progress :normal="1" :total="10" bg-color="#F39800">
-        {{i18n.InterfaceUtilization}}
-        <icon class="icon" type="success" size="18"/>
-      </my-progress>
-      <my-progress :normal="1" :total="10" bg-color="#F39800">
-        {{i18n.CpuUtilization}}
-        <icon class="icon" type="warn" color="#E60012" size="18"/>
-      </my-progress>
-      <my-progress :normal="1" :total="10" bg-color="#F39800">
-        {{i18n.MemoryUtilization}}
-        <icon class="icon" type="success" color="#F39800" size="18"/>
-      </my-progress>
+    <div class="progress-list" style="padding-left: 0;padding-right: 0">
+
+      <div class="pad-l-r-30">
+        <my-progress :number="10" :total="30" process-color="#E60012" left-text="ping" icon="cancel">
+        </my-progress>
+      </div>
+
+
+      <van-collapse :value="activeNames" @change="onChange">
+        <van-collapse-item :title="i18n.InterfaceUtilization" name="interface">
+
+          <div class="my-collapse">
+            <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
+              <van-collapse-item title="Gi0/0  MPLS接口利用率" name="interface-1">
+                <my-progress :number="10" :total="30" process-color="#0CC808" left-text="入站" icon="success">
+                </my-progress>
+                <my-progress :number="10" :total="30" process-color="#E60012" left-text="出站" icon="warn">
+                </my-progress>
+              </van-collapse-item>
+            </van-collapse>
+          </div>
+
+
+        </van-collapse-item>
+        <van-collapse-item :title="i18n.CpuUtilization" name="cpu">
+          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="cup2利用率">
+          </my-progress>
+          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="cup1利用率">
+          </my-progress>
+        </van-collapse-item>
+        <van-collapse-item :title="i18n.MemoryUtilization" name="ram">
+          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="I/O内存利用率">
+          </my-progress>
+          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="处理器内存利用率">
+          </my-progress>
+        </van-collapse-item>
+      </van-collapse>
 
     </div>
 
@@ -107,9 +127,9 @@
       i18n() {
         return this.$t("message")
       },
-      rows(){
+      rows() {
         const i18n = this.$t("message")
-        return  [
+        return [
           {
             width: "22%",
             name: i18n.IP,
@@ -162,11 +182,34 @@
             date: "10000000000"
           }
 
-        ]
+        ],
+        activeNames: [],
+        activeNamesInterface: [],
+      }
+    },
+    methods: {
+      onChange(event) {
+
+        this.activeNames = event.mp.detail
+      },
+      onChangeInterface(event) {
+        console.log(event.mp)
+        this.activeNamesInterface = event.mp.detail
       }
     }
   }
 </script>
+<style lang="stylus">
+  @import "~@/assets/stylus/common.styl"
+  .monitor-detail {
+    .my-collapse {
+      .van-cell {
+        padding-right rpx(5)
+        padding-left rpx(5)
+      }
+    }
+  }
+</style>
 
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"
@@ -182,7 +225,7 @@
   .address-bg {
     width 100%
     height 100%
-    background url("https://ss0.bdstatic.com/94oJfD_bAAcT8t7mm9GUKT-xh_/timg?image&quality=100&size=b4000_4000&sec=1565277730&di=6cefbd51da7caf6e65d5396dff6df3f2&src=http://file01.16sucai.com/d/file/2014-01-25/13906605539127.jpg") center center no-repeat
+    background url("https://wechat.logicalisservice.com/images/red.png") center center no-repeat
     background-size: cover
 
     .address-wrap {
@@ -244,8 +287,9 @@
   }
 
   .progress-list {
-    .icon {
-      vertical-align middle
+
+    .progress-item {
+      padding 0 rpx(30) 0 rpx(30)
     }
   }
 

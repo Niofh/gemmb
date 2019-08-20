@@ -2,7 +2,9 @@
   <div class="my-progress-wrap">
     <div class="header-progress">
       <div class="left">
-        {{leftText}}
+
+        <span>{{leftText}}</span>
+        <icon v-show="icon" class="icon" :type="icon" size="18" />
       </div>
       <div class="right">
         {{rightText}}
@@ -26,7 +28,7 @@
     props: {
       // 右边内容
       rightText: {
-        type: [String,Number],
+        type: [String, Number],
         default: ""
       },
       // 左边内容
@@ -49,7 +51,12 @@
       processColor: { // 进度条颜色
         type: String,
         default: "#CCCCCC"
-      }
+      },
+      icon: {
+        type: String,
+        default: ""
+      },
+
     }
   }
 </script>
@@ -69,6 +76,11 @@
       font-size: rpx(25);
       font-weight: 500;
       color #333
+
+      .icon {
+        margin-left rpx(10)
+        vertical-align middle
+      }
     }
 
     .right {
