@@ -130,8 +130,11 @@
       getBusWork(ticketId) {
         const _this = this
         this.$fly.get(` Api/ServiceDesk/Tickets/${ticketId}`).then(res => {
-          this.bugWork = res
-          _this.getDeviceLog(ticketId)
+          if(res){
+            this.bugWork = res
+            _this.getDeviceLog(ticketId)
+          }
+
         })
 
 
