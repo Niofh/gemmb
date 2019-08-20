@@ -11,13 +11,11 @@
         </div>
         <div class="my-cell-item" :style="{'width':rows[1].width}">
           <div class="left ">
-            <a class="link" :href="'/pages/work-order-detail/main?id='+c.TicketId+''">{{c.TicketId}}</a>
+<!--            <a class="link" :href="'/pages/work-order-detail/main?id='+c.TicketId+''">{{c.TicketId}}</a>-->
+            {{c.TicketId}}
           </div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[2].width}">
-          <div class="left ">{{c.Priority}}</div>
-        </div>
-        <div class="my-cell-item" :style="{'width':rows[3].width}">
           <div class="left">{{BUG_STATUS_CODE[c.IncidentState]}}</div>
         </div>
       </div>
@@ -31,12 +29,9 @@
           <div class="left">{{c.TicketID}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':changeRows[1].width}">
-          <div class="left ">哈哈</div>
-        </div>
-        <div class="my-cell-item" :style="{'width':changeRows[2].width}">
           <div class="left ">{{CHANGE_TYPE_CODE(c.ChangeType)}}</div>
         </div>
-        <div class="my-cell-item" :style="{'width':changeRows[3].width}">
+        <div class="my-cell-item" :style="{'width':changeRows[2].width}">
           <div class="left">{{CHANGE_STATUS_CODE(c.ChangeState)}}</div>
         </div>
       </div>
@@ -79,12 +74,7 @@
             isArrow: true
           },
           {
-            width: "25%",
-            name: i18n.Device,
-            isArrow: true
-          },
-          {
-            width: "25%",
+            width: "50%",
             name: i18n.Status,
             isArrow: true
           }
@@ -94,22 +84,17 @@
         const i18n = this.$t("message")
         return [
           {
-            width: "27%",
+            width: "23%",
             name: i18n.TicketID,
             isArrow: true
           },
           {
-            width: "30%",
-            name: i18n.Device,
-            isArrow: true
-          },
-          {
-            width: "20%",
+            width: "27%",
             name: i18n.Type,
             isArrow: true
           },
           {
-            width: "23%",
+            width: "50%",
             name: i18n.Status,
             isArrow: true
           }
