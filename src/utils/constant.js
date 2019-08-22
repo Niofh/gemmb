@@ -96,3 +96,11 @@ export const CHANGE_STATUS_CODE = {
 }
 
 
+// 历史工单 工单类型
+export const HISTORY_WORK_STATUS = {
+  0: 'Incident',
+  1: 'Problem',
+  2: 'Change',
+  3: 'Request',
+}
+

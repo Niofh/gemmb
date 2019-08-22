@@ -43,7 +43,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": 4,
+			"current": 2,
 			"list": [
 				{
 					"id": -1,
@@ -59,10 +59,10 @@
 					"scene": null
 				},
 				{
-					"id": -1,
+					"id": 2,
 					"name": "监控详情页",
 					"pathName": "pages/monitor-detail/main",
-					"query": "",
+					"query": "deviceId=4193",
 					"scene": null
 				},
 				{

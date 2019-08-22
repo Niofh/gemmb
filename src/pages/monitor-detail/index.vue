@@ -3,23 +3,27 @@
     <div class="header">{{i18n.equipmentDetails}}</div>
 
     <div class="address">
-      <div class="address-bg">
+      <div class="address-bg" :style="{'backgroundColor':bgColor}">
         <div class="address-wrap">
-          <div class="address-header">CS-CE</div>
+          <div class="address-header">{{deviceInfo.Name}}</div>
           <div class="address-body">
-            <div class="left">CISCO2911/K9</div>
-            <div class="right">192.168.1.1</div>
+            <div class="left">
+              {{deviceInfo.LocationName}}/{{deviceInfo.DeviceTypeItems&&deviceInfo.DeviceTypeItems.length>0?deviceInfo.DeviceTypeItems[0].Name:'--'}}
+            </div>
+            <div class="right">{{deviceInfo.IPAddress}}</div>
           </div>
           <div class="address-footer">
-            <span class="left">上海</span>
-            <span class="right">上海市青浦区嘉松中路5555号奥特莱斯品牌直销广场B189耐克换季优惠店</span>
+            <span class="left">{{deviceInfo.AreaName || '--'}}</span>
+            <span class="right">{{deviceInfo.RegionName}}</span>
           </div>
         </div>
       </div>
     </div>
 
 
-    <div class="order-id">{{i18n.AssociatedTicketID}} : <a class="link" href="">12131215</a></div>
+    <div class="order-id">{{i18n.AssociatedTicketID}} : <a class="link"
+                                                           :href="'/pages/work-order-detail/main?id='+tickId">{{tickId}}</a>
+    </div>
     <div class="header">{{i18n.performanceManagement}}</div>
     <div class="progress-list" style="padding-left: 0;padding-right: 0">
 
@@ -66,12 +70,11 @@
 
     <div class="mar-l-r-30">
       <div class="header-bg">{{i18n.alertsHistory}}</div>
-      <my-desc-item date="2019-11-11 11:11:11">
-        Aruba Ac620设备状态从up变为down，ping包丢失100%，宕机时间180s。
-      </my-desc-item>
 
-      <my-desc-item border-color="#0CE501" date="2019-11-11 11:11:11">
-        Aruba 11110设备状态从up变为down，ping包丢失100%，宕机时间180s。
+      <my-desc-item v-for="d in historyWaringList" :key="d.DeviceLocalTime" :border-color="d.SeverityHtmlColor"
+                    :text="d.Notes"
+                    :date=d.time>
+
       </my-desc-item>
 
     </div>
@@ -81,23 +84,25 @@
 
     <div class="table-wrap">
       <my-table-row :rows="rows" :is-show-select.sync="isShowSelect"></my-table-row>
-      <div class="my-table-cell" v-for="c in cells" :key="c.id" :class="c.color">
+      <div class="my-table-cell history" v-for="(c,index) in historyList" :key="index">
         <div class="my-cell-item" :style="{'width':rows[0].width}">
-          <div class="left">{{c.ip}}</div>
+          <div class="left">
+            <a class="link" :href="'/pages/work-order-detail/main?id='+c.TicketId"> {{c.TicketId}}</a>
+          </div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[1].width}">
-          <div class="left ">哈哈</div>
+          <div class="left ">{{HISTORY_WORK_STATUS[c.TicketType]}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[2].width}">
-          <div class="left ">P1</div>
+          <div class="left ">{{'P'+c.Priority}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[3].width}">
-          <div class="left">{{c.status}}</div>
+          <div class="left">{{BUG_STATUS_CODE[c.TicketStatus]}}</div>
         </div>
-        <div class="my-cell-item" :style="{'width':rows[4].width}">
+        <div class="my-cell-item" :style="{'width':rows[4].width,lineHeight:'20px'}">
           <div class="left">
-            <div class="date">2019.7.13</div>
-            <div class="time">16:45:00</div>
+            <div class="date">{{c.date}}</div>
+            <div class="time">{{c.time}}</div>
           </div>
         </div>
       </div>
@@ -113,6 +118,8 @@
   import myTable from "@/components/my-table-row"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
+  import {BUG_STATUS_CODE, HISTORY_WORK_STATUS} from "../../utils/constant";
+  import {formatTime} from "../../utils";
 
   export default {
     mixins: [myTableRowMixin],
@@ -132,7 +139,7 @@
         return [
           {
             width: "22%",
-            name: i18n.IP,
+            name: i18n.TicketID,
             isArrow: true
           },
           {
@@ -160,34 +167,108 @@
     },
     data() {
       return {
-        cells: [
-          {
-            id: 1,
-            color: "history",
-            ip: "192.168.1.1",
-            place: "上海",
-            type: "故障",
-            you: "p1",
-            status: "open",
-            date: "10000000000"
-          },
-          {
-            id: 2,
-            color: "history",
-            ip: "192.168.1.1",
-            place: "上海",
-            type: "故障",
-            you: "p1",
-            status: "open",
-            date: "10000000000"
-          }
-
-        ],
         activeNames: [],
         activeNamesInterface: [],
+        deviceInfo: {},
+        historyList: [],
+        BUG_STATUS_CODE: BUG_STATUS_CODE,
+        HISTORY_WORK_STATUS: HISTORY_WORK_STATUS,
+        tickId: '',
+        bgColor: '',
+        historyWaringList: []
       }
     },
+    mounted() {
+      const deviceId = Number(this.$root.$mp.query.deviceId) || ''
+      this.getDeviceInfo(deviceId)
+      this.getHistory(deviceId)
+      this.getDeviceStatus(deviceId)
+      this.getHistoryWaring(deviceId)
+      this.getPing(deviceId)
+      this.getPerformance(deviceId)
+    },
     methods: {
+
+      // 获取设备基础信息
+      getDeviceInfo(deviceId) {
+        this.$fly.get(`Api/Cmdb/Devices/${deviceId}`).then(res => {
+          if (res) {
+            this.deviceInfo = res
+          }
+        })
+      },
+
+      // 关联的工单ID以及历史工单的内容
+      getHistory(deviceId) {
+        this.$fly.get(`Api/ServiceDesk/Ticket/Device/Ticket/Get/${deviceId}`).then(res => {
+          if (res) {
+            this.historyList = res.map(item => {
+              const format = formatTime(new Date(item.CreatedLocalTime), '/');
+              return {
+                ...item,
+                date: format.t1.slice(2),
+                time: format.t2,
+              }
+            })
+            this.tickId = this.historyList[this.historyList.length - 1].TicketId
+          }
+        })
+      },
+
+      // 获取历史警告
+      getHistoryWaring(deviceId) {
+        const curDate = new Date()
+        const endUtli = formatTime(curDate)
+        const end = endUtli.t1 + 'T' + endUtli.t2
+        // 将半年的时间单位换算成毫秒
+        var halfYear = 24 * 3600 * 1000;
+        const startTime = curDate - halfYear
+        var startUtil = formatTime(new Date(startTime))
+        const start = startUtil.t1 + 'T' + startUtil.t2
+        this.$fly.get(`Api/Nms/Devices/${deviceId}/Alerts?start=${start}&end=${end}`).then(res => {
+          if (res) {
+            this.historyWaringList = res.map(item => {
+              const {t1, t2} = formatTime(new Date(item.DeviceLocalTime))
+              const username = item.CustomerName
+              return {
+                ...item,
+                time: t1 + ' ' + t2,
+                username: username
+              }
+            })
+          }
+        })
+      },
+
+
+      getDeviceStatus(deviceId) {
+        this.$fly.get(`Api/Nms/Devices/${deviceId}/DeviceStatus`).then(res => {
+          if (res) {
+            console.log(res)
+            this.bgColor = res[0].SeverityHtmlColor
+          }
+        })
+      },
+
+      getPing(deviceId) {
+        this.$fly.get(`Api/Nms/Poller/PollerRequest/Ping/Start/${deviceId}`).then(res => {
+          if (res) {
+            delete res.Name
+            this.$fly.post(`Api/Nms/Poller/PollerRequest/PingResponseData/Get`, res).then(result => {
+
+            })
+          }
+        })
+      },
+
+      // 获取性能指标
+      getPerformance(deviceId) {
+        this.$fly.get(`Api/Nms/Devices/${deviceId}/StatisticsTrees`).then(res => {
+          console.log(res)
+        })
+      },
+
+
       onChange(event) {
 
         this.activeNames = event.mp.detail
@@ -225,7 +306,6 @@
   .address-bg {
     width 100%
     height 100%
-    background url("https://wechat.logicalisservice.com/images/red.png") center center no-repeat
     background-size: cover
 
     .address-wrap {
@@ -290,6 +370,13 @@
 
     .progress-item {
       padding 0 rpx(30) 0 rpx(30)
+    }
+  }
+
+  .table-wrap {
+    .my-cell-item {
+      height rpx(76)
+      line-height rpx(76)
     }
   }
 

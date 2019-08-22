@@ -73,7 +73,7 @@
     },
     data() {
       return {
-        bgColor: "#0CC808",
+        bgColor: "",
         devicesTotal: 0, // 设备总数
         devicesObj: {},// 设备状态数量
         waringObj: { // 警告数量

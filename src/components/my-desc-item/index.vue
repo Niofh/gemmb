@@ -42,7 +42,9 @@
     border-radius: rpx(10);
     font-weight: 400;
     border-top: solid #E50112 rpx(10)
-
+    overflow hidden
+    word-wrap: break-word;
+    word-break: normal;
     .my-desc-body {
       margin-bottom rpx(50)
       font-size rpx(28)
