@@ -8,12 +8,12 @@
           <div class="address-header">{{deviceInfo.Name}}</div>
           <div class="address-body">
             <div class="left">
-              {{deviceInfo.LocationName}}/{{deviceInfo.DeviceTypeItems&&deviceInfo.DeviceTypeItems.length>0?deviceInfo.DeviceTypeItems[0].Name:'--'}}
+              {{deviceInfo.LocationName}}/{{deviceInfo.DeviceTypeItems&&deviceInfo.DeviceTypeItems.length>0?deviceInfo.DeviceTypeItems[0].Name:"--"}}
             </div>
             <div class="right">{{deviceInfo.IPAddress}}</div>
           </div>
           <div class="address-footer">
-            <span class="left">{{deviceInfo.AreaName || '--'}}</span>
+            <span class="left">{{deviceInfo.AreaName || "--"}}</span>
             <span class="right">{{deviceInfo.RegionName}}</span>
           </div>
         </div>
@@ -36,19 +36,15 @@
       <van-collapse :value="activeNames" @change="onChange">
         <van-collapse-item :title="i18n.InterfaceUtilization" name="interface">
 
-          <div class="my-collapse">
-            <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
-              <van-collapse-item title="Gi0/0  MPLS接口利用率" name="interface-1">
-                <my-progress :number="10" :total="30" process-color="#0CC808" left-text="入站" icon="success">
-                </my-progress>
-                <my-progress :number="10" :total="30" process-color="#E60012" left-text="出站" icon="warn">
-                </my-progress>
-              </van-collapse-item>
-            </van-collapse>
-          </div>
+          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="cup2利用率">
+          </my-progress>
+          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="cup1利用率">
+          </my-progress>
 
 
         </van-collapse-item>
+
+
         <van-collapse-item :title="i18n.CpuUtilization" name="cpu">
           <my-progress :number="10" :total="30" process-color="#0CC808" left-text="cup2利用率">
           </my-progress>
@@ -94,7 +90,7 @@
           <div class="left ">{{HISTORY_WORK_STATUS[c.TicketType]}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[2].width}">
-          <div class="left ">{{'P'+c.Priority}}</div>
+          <div class="left ">{{"P"+c.Priority}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[3].width}">
           <div class="left">{{BUG_STATUS_CODE[c.TicketStatus]}}</div>
@@ -118,8 +114,8 @@
   import myTable from "@/components/my-table-row"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import {BUG_STATUS_CODE, HISTORY_WORK_STATUS} from "../../utils/constant";
-  import {formatTime} from "../../utils";
+  import { BUG_STATUS_CODE, HISTORY_WORK_STATUS } from "../../utils/constant"
+  import { formatTime } from "../../utils"
 
   export default {
     mixins: [myTableRowMixin],
@@ -128,7 +124,6 @@
       "my-desc-item": myDescItem,
       "my-table": myTable,
       "my-table-row": myTableRow
-
     },
     computed: {
       i18n() {
@@ -173,13 +168,14 @@
         historyList: [],
         BUG_STATUS_CODE: BUG_STATUS_CODE,
         HISTORY_WORK_STATUS: HISTORY_WORK_STATUS,
-        tickId: '',
-        bgColor: '',
-        historyWaringList: []
+        tickId: "",
+        bgColor: "",
+        historyWaringList: [],
+        cpuData: []  // cpu数据
       }
     },
     mounted() {
-      const deviceId = Number(this.$root.$mp.query.deviceId) || ''
+      const deviceId = Number(this.$root.$mp.query.deviceId) || ""
       this.getDeviceInfo(deviceId)
       this.getHistory(deviceId)
       this.getDeviceStatus(deviceId)
@@ -203,11 +199,11 @@
         this.$fly.get(`Api/ServiceDesk/Ticket/Device/Ticket/Get/${deviceId}`).then(res => {
           if (res) {
             this.historyList = res.map(item => {
-              const format = formatTime(new Date(item.CreatedLocalTime), '/');
+              const format = formatTime(new Date(item.CreatedLocalTime), "/")
               return {
                 ...item,
                 date: format.t1.slice(2),
-                time: format.t2,
+                time: format.t2
               }
             })
             this.tickId = this.historyList[this.historyList.length - 1].TicketId
@@ -219,20 +215,20 @@
       getHistoryWaring(deviceId) {
         const curDate = new Date()
         const endUtli = formatTime(curDate)
-        const end = endUtli.t1 + 'T' + endUtli.t2
+        const end = endUtli.t1 + "T" + endUtli.t2
         // 将半年的时间单位换算成毫秒
-        var halfYear = 24 * 3600 * 1000;
+        var halfYear = 24 * 3600 * 1000
         const startTime = curDate - halfYear
         var startUtil = formatTime(new Date(startTime))
-        const start = startUtil.t1 + 'T' + startUtil.t2
+        const start = startUtil.t1 + "T" + startUtil.t2
         this.$fly.get(`Api/Nms/Devices/${deviceId}/Alerts?start=${start}&end=${end}`).then(res => {
           if (res) {
             this.historyWaringList = res.map(item => {
-              const {t1, t2} = formatTime(new Date(item.DeviceLocalTime))
+              const { t1, t2 } = formatTime(new Date(item.DeviceLocalTime))
               const username = item.CustomerName
               return {
                 ...item,
-                time: t1 + ' ' + t2,
+                time: t1 + " " + t2,
                 username: username
               }
             })
@@ -261,10 +257,35 @@
         })
       },
 
+
+
       // 获取性能指标
       getPerformance(deviceId) {
         this.$fly.get(`Api/Nms/Devices/${deviceId}/StatisticsTrees`).then(res => {
           console.log(res)
+          if (res && res.length > 0) {
+            const data = res[0]
+
+            for (let i = 0; i < data.ChildItems.length; i++) {
+              const item = data.ChildItems[i]
+              if (item.Label === "System") {
+                // System -> Cpu -> Cpu Usage
+                console.log('System',item)
+                const sysChildItems = item.ChildItems
+
+                for (let j = 0; j < sysChildItems.length; j++) {
+                  const sys = sysChildItems[j]
+                  console.log(sys.Label)
+                  if (sys.Label.toLocaleLowerCase().trim() === "cpu") {
+                    console.log('CPU ChildItems',sys.ChildItems)
+                  }
+
+                }
+              }
+            }
+
+
+          }
         })
       },
 
