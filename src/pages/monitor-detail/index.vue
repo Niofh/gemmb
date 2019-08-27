@@ -114,8 +114,8 @@
   import myTable from "@/components/my-table-row"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import { BUG_STATUS_CODE, HISTORY_WORK_STATUS } from "../../utils/constant"
-  import { formatTime } from "../../utils"
+  import {BUG_STATUS_CODE, HISTORY_WORK_STATUS} from "../../utils/constant"
+  import {formatTime} from "../../utils"
 
   export default {
     mixins: [myTableRowMixin],
@@ -128,6 +128,9 @@
     computed: {
       i18n() {
         return this.$t("message")
+      },
+      customerTag() {
+        return this.$store.state.userInfo.CustomerTag
       },
       rows() {
         const i18n = this.$t("message")
@@ -175,6 +178,7 @@
       }
     },
     mounted() {
+      this.cpuData = []
       const deviceId = Number(this.$root.$mp.query.deviceId) || ""
       this.getDeviceInfo(deviceId)
       this.getHistory(deviceId)
@@ -224,7 +228,7 @@
         this.$fly.get(`Api/Nms/Devices/${deviceId}/Alerts?start=${start}&end=${end}`).then(res => {
           if (res) {
             this.historyWaringList = res.map(item => {
-              const { t1, t2 } = formatTime(new Date(item.DeviceLocalTime))
+              const {t1, t2} = formatTime(new Date(item.DeviceLocalTime))
               const username = item.CustomerName
               return {
                 ...item,
@@ -258,7 +262,6 @@
       },
 
 
-
       // 获取性能指标
       getPerformance(deviceId) {
         this.$fly.get(`Api/Nms/Devices/${deviceId}/StatisticsTrees`).then(res => {
@@ -270,23 +273,95 @@
               const item = data.ChildItems[i]
               if (item.Label === "System") {
                 // System -> Cpu -> Cpu Usage
-                console.log('System',item)
+                console.log('System', item)
                 const sysChildItems = item.ChildItems
 
                 for (let j = 0; j < sysChildItems.length; j++) {
                   const sys = sysChildItems[j]
-                  console.log(sys.Label)
                   if (sys.Label.toLocaleLowerCase().trim() === "cpu") {
-                    console.log('CPU ChildItems',sys.ChildItems)
+                    console.log('CPU ChildItems', sys.ChildItems)
+                    this.childItems(sys, 'Cpu Usage', this.cpuData)
                   }
-
                 }
+
               }
             }
+            console.log('this.cpuData', this.cpuData)
+            this.postData(this.cpuData)
 
 
           }
         })
+      },
+
+      async postData(data) {
+
+        const curDate = new Date()
+        const endUtli = formatTime(curDate)
+        const end = endUtli.t1 + "T" + endUtli.t2
+        // 将半年的时间单位换算成毫秒
+        var halfYear = 1 * 3600 * 1000
+        const startTime = curDate - halfYear
+        var startUtil = formatTime(new Date(startTime))
+        const start = startUtil.t1 + "T" + startUtil.t2
+
+        // 改造数据
+        const newData = []
+
+        data.forEach(item => {
+          item.ChartItems.forEach(chart => {
+            newData.push({
+              "CustomerTag": this.customerTag,
+              "ItemId": item.ItemId,
+              "ChartingMethod": 0, // 默认
+              "ChartId": chart.ChartId,
+              "Start": start,
+              "End": end,
+              "DataRollupType": 0 // 默认
+            })
+          })
+        })
+
+
+        console.log('newData', newData)
+        for (let newDatum of newData) {
+          const {ChartOptions} = await this._postData(newDatum)
+          await this._getItemIdDesc(newDatum.ItemId)
+          console.log(JSON.parse(ChartOptions))
+        }
+
+      },
+
+
+      _postData(params) {
+        return this.$fly.post(`Api/Nms/Statistics/GetChartDataItem`, params)
+      },
+      _getItemIdDesc(ItemId) {
+        return this.$fly.get(`Api/Nms/SnmpEntities/${ItemId}`)
+      },
+
+
+      /**
+       * 递归数据
+       * @param child  内容
+       * @param label  查找数据字符串
+       * @param wrapData 存放容器数据
+       */
+      childItems(child, label, wrapData) {
+        if (child.ChildItems.length <= 0) {
+          if (child.ChartItems && child.ChartItems.length) {
+            const chartItem = child.ChartItems[0]
+            console.log('chartItem', chartItem)
+            if (chartItem.Label === label) {
+              wrapData.push(child)  // 获取数据
+            }
+          }
+          return
+        }
+        for (let i = 0; i < child.ChildItems.length; i++) {
+          const item = child.ChildItems[i]
+          this.childItems(item, label, wrapData)
+        }
       },
 
 
