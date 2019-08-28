@@ -28,7 +28,7 @@
     <div class="progress-list" style="padding-left: 0;padding-right: 0">
 
       <div class="pad-l-r-30">
-        <my-progress :number="10" :total="30" process-color="#E60012" left-text="ping" icon="cancel">
+        <my-progress :number="ping" :total="100" process-color="#E60012" left-text="ping" icon="cancel">
         </my-progress>
       </div>
 
@@ -39,10 +39,11 @@
           <div class="my-collapse">
             <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
               <van-collapse-item v-for="inter in interfaceList" :key="inter.name" :title="inter.name"
-                                 :name="inter.name">
-                <my-progress :number="10" :total="30" process-color="#0CC808" left-text="入站" icon="success">
+                                 :name="inter.type">
+                <div class="desc" v-show="inter.Description">{{inter.Description}}</div>
+                <my-progress :number="inter.in" :total="100" process-color="#0CC808" left-text="in" icon="success">
                 </my-progress>
-                <my-progress :number="10" :total="30" process-color="#E60012" left-text="出站" icon="warn">
+                <my-progress :number="inter.out" :total="100" process-color="#E60012" left-text="out" icon="warn">
                 </my-progress>
               </van-collapse-item>
             </van-collapse>
@@ -55,10 +56,9 @@
 
           <div class="my-collapse">
             <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
-              <van-collapse-item v-for="inter in cpuList" :key="inter.name" :title="inter.name" :name="inter.name">
-                <my-progress :number="10" :total="30" process-color="#0CC808" left-text="入站" icon="success">
-                </my-progress>
-                <my-progress :number="10" :total="30" process-color="#E60012" left-text="出站" icon="warn">
+              <van-collapse-item v-for="inter in cpuList" :key="inter.name" :title="inter.name" :name="inter.type">
+                <div class="desc" v-show="inter.Description">{{inter.Description}}</div>
+                <my-progress :number="inter.value" :total="100" process-color="#0CC808">
                 </my-progress>
               </van-collapse-item>
             </van-collapse>
@@ -69,10 +69,9 @@
 
           <div class="my-collapse">
             <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
-              <van-collapse-item v-for="inter in memoryList" :key="inter.name" :title="inter.name" :name="inter.name">
-                <my-progress :number="10" :total="30" process-color="#0CC808" left-text="入站" icon="success">
-                </my-progress>
-                <my-progress :number="10" :total="30" process-color="#E60012" left-text="出站" icon="warn">
+              <van-collapse-item v-for="inter in memoryList" :key="inter.name" :title="inter.name" :name="inter.type">
+                <div class="desc" v-show="inter.Description">{{inter.Description}}</div>
+                <my-progress :number="inter.value" :total="100" process-color="#0CC808">
                 </my-progress>
               </van-collapse-item>
             </van-collapse>
@@ -124,7 +123,7 @@
         </div>
       </div>
     </div>
-
+    <van-toast id="van-toast"></van-toast>
     <div class="station-min"></div>
   </div>
 </template>
@@ -137,6 +136,7 @@
   import myTableRowMixin from "@/mixins/myTableRowMixin"
   import { BUG_STATUS_CODE, HISTORY_WORK_STATUS } from "../../utils/constant"
   import { formatTime } from "../../utils"
+  import Toast from "@/../static/vant/toast/toast"
 
   export default {
     mixins: [myTableRowMixin],
@@ -201,19 +201,11 @@
         interfaceList: [],
         memoryData: [], // interface数据
         memoryList: [],
+        oldActice: [], // 存储以前打开过的接口率
+        ping:0
       }
     },
     mounted() {
-      this.cpuData = []
-      this.cpuList = []
-      this.interfaceData = []
-      this.interfaceList = []
-      this.memoryData = []
-      this.memoryList = []
-
-      this.activeNames=[]
-      this.activeNamesInterface=[]
-
 
       const deviceId = Number(this.$root.$mp.query.deviceId) || ""
       this.getDeviceInfo(deviceId)
@@ -222,6 +214,17 @@
       this.getHistoryWaring(deviceId)
       this.getPing(deviceId)
       this.getPerformance(deviceId)
+    },
+    onUnload(){
+      this.cpuData = []
+      this.cpuList = []
+      this.interfaceData = []
+      this.interfaceList = []
+      this.memoryData = []
+      this.memoryList = []
+
+      this.activeNames = []
+      this.activeNamesInterface = []
     },
     methods: {
 
@@ -283,14 +286,24 @@
       },
 
       getPing(deviceId) {
-        this.$fly.get(`Api/Nms/Poller/PollerRequest/Ping/Start/${deviceId}`).then(res => {
+        this.$fly.get(`Api/Nms/Poller/PollerRequest/Ping/Start/${deviceId}`).then(async (res) => {
           if (res) {
             delete res.Name
-            this.$fly.post(`Api/Nms/Poller/PollerRequest/PingResponseData/Get`, res).then(result => {
-
-            })
+            let num = 1
+            while (num < 5) {
+              const rst = await this._getPing(res)
+              if (rst) {
+                break
+              } else {
+                num++
+              }
+            }
           }
         })
+      },
+
+      _getPing(param) {
+        return this.$fly.post(`Api/Nms/Poller/PollerRequest/PingResponseData/Get`, param)
       },
 
 
@@ -313,8 +326,7 @@
                   if (sys.Label.toLocaleLowerCase().trim() === "cpu") {
                     console.log("CPU ChildItems", sys.ChildItems)
                     this.childItems(sys, "Cpu Usage", this.cpuData)
-                  }
-                  else if (sys.Label.toLocaleLowerCase().trim() === "memory") {
+                  } else if (sys.Label.toLocaleLowerCase().trim() === "memory") {
                     console.log("Memory ChildItems", sys.ChildItems)
                     this.childItems(sys, "Memory Usage", this.memoryData)
                   }
@@ -325,12 +337,14 @@
                 this.childItems(item, "Interface Utilization", this.interfaceData)
               }
             }
-            console.log("this.cpuData", this.cpuData)
-            console.log("this.interfaceData", this.interfaceData)
+            // console.log("this.cpuData", this.cpuData)
+            // console.log("this.interfaceData", this.interfaceData)
             // “Interface Utilization”"Cpu Usage”、“Memory Usage”；
             this.cpuList = this.changeData(this.cpuData, "Cpu Usage")
             this.interfaceList = this.changeData(this.interfaceData, "Interface Utilization")
             this.memoryList = this.changeData(this.memoryData, "Memory Usage")
+            console.log("this.cpuList", this.cpuList)
+            console.log("this.interfaceList", this.interfaceList)
             console.log("this.memoryList", this.memoryList)
 
 
@@ -339,12 +353,11 @@
       },
 
       // 获取当前时间
-      _getTime() {
+      _getTime(halfYear) {
         const curDate = new Date()
         const endUtli = formatTime(curDate)
         const end = endUtli.t1 + "T" + endUtli.t2
         // 将半年的时间单位换算成毫秒
-        var halfYear = 1 * 3600 * 1000
         const startTime = curDate - halfYear
         var startUtil = formatTime(new Date(startTime))
         const start = startUtil.t1 + "T" + startUtil.t2
@@ -360,10 +373,25 @@
           item.ChartItems.forEach(chart => {
             if (chart.Label === label) {
               let name = item.Label
+              let type = "interface"  // 默认是 interface
               if (chart.Label === "Interface Utilization") {
                 const sp = item.Label.split(/\//)
                 const index = sp[0].search(/\d+/)
-                name = sp[0].slice(0,3) + "" + sp[0].slice(index)+"/"+sp[1]
+                name = sp[0].slice(0, 3) + "" + sp[0].slice(index) + "/" + sp[1]
+                type = "interface"
+              } else if (chart.Label === "Memory Usage") {
+                type = "memory"
+              } else if (chart.Label === "Cpu Usage") {
+                type = "cpu"
+              }
+
+             const ItemData =  newData.map(item=>item.ItemId)
+             const ChartIdData =  newData.map(item=>item.ChartId)
+
+
+              if(ItemData.indexOf(item.ItemId)>-1&&ChartIdData.indexOf(chart.ChartId)>-1){
+                // 已经有重复项目
+                return
               }
               newData.push({
                 "CustomerTag": this.customerTag,
@@ -373,11 +401,15 @@
                 "Start": "",
                 "End": "",
                 "DataRollupType": 0,// 默认
-                name: `${chart.Label.split(" ")[0]}-${name}-Usage-${chart.ChartId}`
+                name: `${chart.Label.split(" ")[0]}-${name}-Usage-${chart.ChartId}`,
+                type: `${type}List-${chart.Label.split(" ")[0]}-${name}-Usage-${chart.ChartId}`
               })
             }
           })
         })
+
+
+
         return newData
       },
 
@@ -419,9 +451,74 @@
       onChange(event) {
         this.activeNames = event.mp.detail
       },
-      onChangeInterface(event) {
-        console.log(event.mp)
-        this.activeNamesInterface = event.mp.detail
+      async onChangeInterface(event) {
+        console.log(event.mp.detail)
+        const detail = event.mp.detail
+
+        if (detail.length < this.oldActice.length) {
+          this.activeNamesInterface = this.oldActice = detail
+          return
+        }
+        if (detail.length <= 0) {
+          this.activeNamesInterface = this.oldActice = event.mp.detail
+          return
+        }
+
+        try {
+          Toast.loading({
+            mask: true,
+            message: "loading..."
+          })
+
+          const item = detail[detail.length - 1]
+
+          const splitData = item.split("-")
+
+          const listName = splitData[0]
+          const chartId = splitData[splitData.length - 1]
+
+          console.log(listName, chartId)
+
+          let paramsItem = {}
+          this[listName].forEach(item => {
+            if (item.ChartId == chartId) {
+              paramsItem = item
+            }
+          })
+          var halfYear = 1 * 3600 * 1000
+          const { start, end } = this._getTime(halfYear)
+          paramsItem.Start = start
+          paramsItem.End = end
+
+          const resData = await this._postData(paramsItem)
+          const itemDesc = await this._getItemIdDesc(paramsItem.ItemId)
+
+          paramsItem.Description = itemDesc.Description
+
+          this.activeNamesInterface = this.oldActice = event.mp.detail
+
+          if (resData.ChartData) {
+            const splitList = resData.ChartData.split(/[\n\s]/).filter(item => !!item)
+            console.log(splitList)
+
+            const str = splitList[splitList.length - 1]
+            const valueList = str.split(",")
+            console.log(valueList)
+            if (listName === "interfaceList") {
+              paramsItem.in = Number(valueList[valueList.length - 1])
+              paramsItem.out = Number(valueList[valueList.length - 2])
+            } else if (listName === "cpuList") {
+              paramsItem.value = Number(valueList[valueList.length - 2])
+            } else if (listName === "memoryList") {
+              paramsItem.value = Number(valueList[valueList.length - 2])
+            }
+
+            console.log(paramsItem)
+
+          }
+        } finally {
+          Toast.clear()
+        }
       }
     }
   }
