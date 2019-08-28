@@ -36,26 +36,47 @@
       <van-collapse :value="activeNames" @change="onChange">
         <van-collapse-item :title="i18n.InterfaceUtilization" name="interface">
 
-          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="cup2利用率">
-          </my-progress>
-          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="cup1利用率">
-          </my-progress>
-
+          <div class="my-collapse">
+            <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
+              <van-collapse-item v-for="inter in interfaceList" :key="inter.name" :title="inter.name"
+                                 :name="inter.name">
+                <my-progress :number="10" :total="30" process-color="#0CC808" left-text="入站" icon="success">
+                </my-progress>
+                <my-progress :number="10" :total="30" process-color="#E60012" left-text="出站" icon="warn">
+                </my-progress>
+              </van-collapse-item>
+            </van-collapse>
+          </div>
 
         </van-collapse-item>
 
 
         <van-collapse-item :title="i18n.CpuUtilization" name="cpu">
-          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="cup2利用率">
-          </my-progress>
-          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="cup1利用率">
-          </my-progress>
+
+          <div class="my-collapse">
+            <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
+              <van-collapse-item v-for="inter in cpuList" :key="inter.name" :title="inter.name" :name="inter.name">
+                <my-progress :number="10" :total="30" process-color="#0CC808" left-text="入站" icon="success">
+                </my-progress>
+                <my-progress :number="10" :total="30" process-color="#E60012" left-text="出站" icon="warn">
+                </my-progress>
+              </van-collapse-item>
+            </van-collapse>
+          </div>
+
         </van-collapse-item>
         <van-collapse-item :title="i18n.MemoryUtilization" name="ram">
-          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="I/O内存利用率">
-          </my-progress>
-          <my-progress :number="10" :total="30" process-color="#0CC808" left-text="处理器内存利用率">
-          </my-progress>
+
+          <div class="my-collapse">
+            <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
+              <van-collapse-item v-for="inter in memoryList" :key="inter.name" :title="inter.name" :name="inter.name">
+                <my-progress :number="10" :total="30" process-color="#0CC808" left-text="入站" icon="success">
+                </my-progress>
+                <my-progress :number="10" :total="30" process-color="#E60012" left-text="出站" icon="warn">
+                </my-progress>
+              </van-collapse-item>
+            </van-collapse>
+          </div>
         </van-collapse-item>
       </van-collapse>
 
@@ -114,8 +135,8 @@
   import myTable from "@/components/my-table-row"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import {BUG_STATUS_CODE, HISTORY_WORK_STATUS} from "../../utils/constant"
-  import {formatTime} from "../../utils"
+  import { BUG_STATUS_CODE, HISTORY_WORK_STATUS } from "../../utils/constant"
+  import { formatTime } from "../../utils"
 
   export default {
     mixins: [myTableRowMixin],
@@ -174,11 +195,26 @@
         tickId: "",
         bgColor: "",
         historyWaringList: [],
-        cpuData: []  // cpu数据
+        cpuData: [],  // cpu数据
+        cpuList: [],  // cpu数据
+        interfaceData: [], // interface数据
+        interfaceList: [],
+        memoryData: [], // interface数据
+        memoryList: [],
       }
     },
     mounted() {
       this.cpuData = []
+      this.cpuList = []
+      this.interfaceData = []
+      this.interfaceList = []
+      this.memoryData = []
+      this.memoryList = []
+
+      this.activeNames=[]
+      this.activeNamesInterface=[]
+
+
       const deviceId = Number(this.$root.$mp.query.deviceId) || ""
       this.getDeviceInfo(deviceId)
       this.getHistory(deviceId)
@@ -217,18 +253,14 @@
 
       // 获取历史警告
       getHistoryWaring(deviceId) {
-        const curDate = new Date()
-        const endUtli = formatTime(curDate)
-        const end = endUtli.t1 + "T" + endUtli.t2
+
         // 将半年的时间单位换算成毫秒
         var halfYear = 24 * 3600 * 1000
-        const startTime = curDate - halfYear
-        var startUtil = formatTime(new Date(startTime))
-        const start = startUtil.t1 + "T" + startUtil.t2
+        const { start, end } = this._getTime(halfYear)
         this.$fly.get(`Api/Nms/Devices/${deviceId}/Alerts?start=${start}&end=${end}`).then(res => {
           if (res) {
             this.historyWaringList = res.map(item => {
-              const {t1, t2} = formatTime(new Date(item.DeviceLocalTime))
+              const { t1, t2 } = formatTime(new Date(item.DeviceLocalTime))
               const username = item.CustomerName
               return {
                 ...item,
@@ -273,29 +305,41 @@
               const item = data.ChildItems[i]
               if (item.Label === "System") {
                 // System -> Cpu -> Cpu Usage
-                console.log('System', item)
+                console.log("System", item)
                 const sysChildItems = item.ChildItems
 
                 for (let j = 0; j < sysChildItems.length; j++) {
                   const sys = sysChildItems[j]
                   if (sys.Label.toLocaleLowerCase().trim() === "cpu") {
-                    console.log('CPU ChildItems', sys.ChildItems)
-                    this.childItems(sys, 'Cpu Usage', this.cpuData)
+                    console.log("CPU ChildItems", sys.ChildItems)
+                    this.childItems(sys, "Cpu Usage", this.cpuData)
+                  }
+                  else if (sys.Label.toLocaleLowerCase().trim() === "memory") {
+                    console.log("Memory ChildItems", sys.ChildItems)
+                    this.childItems(sys, "Memory Usage", this.memoryData)
                   }
                 }
 
+              } else if (item.Label === "Interface") {
+                console.log("interface")
+                this.childItems(item, "Interface Utilization", this.interfaceData)
               }
             }
-            console.log('this.cpuData', this.cpuData)
-            this.postData(this.cpuData)
+            console.log("this.cpuData", this.cpuData)
+            console.log("this.interfaceData", this.interfaceData)
+            // “Interface Utilization”"Cpu Usage”、“Memory Usage”；
+            this.cpuList = this.changeData(this.cpuData, "Cpu Usage")
+            this.interfaceList = this.changeData(this.interfaceData, "Interface Utilization")
+            this.memoryList = this.changeData(this.memoryData, "Memory Usage")
+            console.log("this.memoryList", this.memoryList)
 
 
           }
         })
       },
 
-      async postData(data) {
-
+      // 获取当前时间
+      _getTime() {
         const curDate = new Date()
         const endUtli = formatTime(curDate)
         const end = endUtli.t1 + "T" + endUtli.t2
@@ -304,32 +348,37 @@
         const startTime = curDate - halfYear
         var startUtil = formatTime(new Date(startTime))
         const start = startUtil.t1 + "T" + startUtil.t2
-
+        return {
+          start, end
+        }
+      },
+      // 改造数据 第二个接口需要数据的
+      changeData(data, label) {
         // 改造数据
         const newData = []
-
         data.forEach(item => {
           item.ChartItems.forEach(chart => {
-            newData.push({
-              "CustomerTag": this.customerTag,
-              "ItemId": item.ItemId,
-              "ChartingMethod": 0, // 默认
-              "ChartId": chart.ChartId,
-              "Start": start,
-              "End": end,
-              "DataRollupType": 0 // 默认
-            })
+            if (chart.Label === label) {
+              let name = item.Label
+              if (chart.Label === "Interface Utilization") {
+                const sp = item.Label.split(/\//)
+                const index = sp[0].search(/\d+/)
+                name = sp[0].slice(0,3) + "" + sp[0].slice(index)+"/"+sp[1]
+              }
+              newData.push({
+                "CustomerTag": this.customerTag,
+                "ItemId": item.ItemId,
+                "ChartingMethod": 0, // 默认
+                "ChartId": chart.ChartId,
+                "Start": "",
+                "End": "",
+                "DataRollupType": 0,// 默认
+                name: `${chart.Label.split(" ")[0]}-${name}-Usage-${chart.ChartId}`
+              })
+            }
           })
         })
-
-
-        console.log('newData', newData)
-        for (let newDatum of newData) {
-          const {ChartOptions} = await this._postData(newDatum)
-          await this._getItemIdDesc(newDatum.ItemId)
-          console.log(JSON.parse(ChartOptions))
-        }
-
+        return newData
       },
 
 
@@ -350,11 +399,13 @@
       childItems(child, label, wrapData) {
         if (child.ChildItems.length <= 0) {
           if (child.ChartItems && child.ChartItems.length) {
-            const chartItem = child.ChartItems[0]
-            console.log('chartItem', chartItem)
-            if (chartItem.Label === label) {
-              wrapData.push(child)  // 获取数据
-            }
+            child.ChartItems.forEach(item => {
+              console.log("chartItem", item)
+              if (item.Label === label) {
+                wrapData.push(child)  // 获取数据
+              }
+            })
+
           }
           return
         }
@@ -366,7 +417,6 @@
 
 
       onChange(event) {
-
         this.activeNames = event.mp.detail
       },
       onChangeInterface(event) {

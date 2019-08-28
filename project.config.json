@@ -62,7 +62,7 @@
 					"id": 2,
 					"name": "监控详情页",
 					"pathName": "pages/monitor-detail/main",
-					"query": "deviceId=4193",
+					"query": "deviceId= 2269",
 					"scene": null
 				},
 				{
