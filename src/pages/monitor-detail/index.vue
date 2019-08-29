@@ -41,9 +41,11 @@
               <van-collapse-item v-for="inter in interfaceList" :key="inter.name" :title="inter.name"
                                  :name="inter.type">
                 <div class="desc" v-show="inter.Description">{{inter.Description}}</div>
-                <my-progress :number="inter.in" :total="100" process-color="#0CC808" left-text="in" icon="success">
+                <my-progress :number="inter.in" :total="100" process-color="#0CC808" left-text="in"
+                             :icon="inter.inIcon">
                 </my-progress>
-                <my-progress :number="inter.out" :total="100" process-color="#E60012" left-text="out" icon="warn">
+                <my-progress :number="inter.out" :total="100" process-color="#E60012" left-text="out"
+                             :icon="inter.outIcon">
                 </my-progress>
               </van-collapse-item>
             </van-collapse>
@@ -413,7 +415,7 @@
                 "End": "",
                 "DataRollupType": 0,// 默认
                 name: `${chart.Label.split(" ")[0]}-${name}-Usage-${chart.ChartId}`,
-                type: `${type}List-${chart.Label.split(" ")[0]}-${name}-Usage-${chart.ChartId}`
+                type: `${type}List-${item.ItemId}-${chart.Label.split(" ")[0]}-${name}-Usage-${chart.ChartId}`
               })
             }
           })
@@ -480,18 +482,23 @@
             message: "loading..."
           })
 
+          console.log("detail", detail)
+
           const item = detail[detail.length - 1]
+
+          console.log("item", item)
+
 
           const splitData = item.split("-")
 
           const listName = splitData[0]
+          const itemId = splitData[1]
           const chartId = splitData[splitData.length - 1]
 
-          console.log(listName, chartId)
-
+          console.log(listName, chartId,itemId)
           let paramsItem = {}
           this[listName].forEach(item => {
-            if (item.ChartId == chartId) {
+            if (item.ChartId == chartId&&item.ItemId == itemId) {
               paramsItem = item
             }
           })
@@ -517,6 +524,17 @@
             if (listName === "interfaceList") {
               paramsItem.in = Number(valueList[valueList.length - 1])
               paramsItem.out = Number(valueList[valueList.length - 2])
+
+              paramsItem.inIcon = "warn"
+              if (paramsItem.in >= 0 && paramsItem.in <= 70) {
+                paramsItem.inIcon = "success"
+              }
+
+              paramsItem.outIcon = "warn"
+              if (paramsItem.out >= 0 && paramsItem.out <= 70) {
+                paramsItem.outIcon = "success"
+              }
+
             } else if (listName === "cpuList") {
               paramsItem.value = Number(valueList[valueList.length - 2])
             } else if (listName === "memoryList") {
