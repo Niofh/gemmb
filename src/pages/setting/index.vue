@@ -77,7 +77,6 @@
           content: "退出后不会删除任何历史数据，下次登录依然可以使用本账号",
           success(res) {
             if (res.confirm) {
-              _this.$store.commit('setUserInfo',{})
               wx.clearStorageSync()
               wx.redirectTo({
                 url: "/pages/login/main"

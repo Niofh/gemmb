@@ -1,7 +1,7 @@
 {
   "pages": [
-    "pages/login/main",
     "pages/index/main",
+    "pages/login/main",
     "pages/monitor/main",
     "pages/monitor-detail/main",
     "pages/setting/main",

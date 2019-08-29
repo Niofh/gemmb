@@ -29,17 +29,17 @@
           <img class="username-icon" slot="left-icon" src="https://wechat.logicalisservice.com/images/pwd.png" alt="">
         </van-field>
 
-        <div class="checkbox">
-          <van-checkbox
-            checked-color="#E31E27"
-            label-class="label"
-            :value="checked"
-            @change="onChangeChecked"
-          >
-            remember username and password
+        <!--        <div class="checkbox">-->
+        <!--          <van-checkbox-->
+        <!--            checked-color="#E31E27"-->
+        <!--            label-class="label"-->
+        <!--            :value="checked"-->
+        <!--            @change="onChangeChecked"-->
+        <!--          >-->
+        <!--            remember username and password-->
 
-          </van-checkbox>
-        </div>
+        <!--          </van-checkbox>-->
+        <!--        </div>-->
         <van-button type="danger" size="large" @click="onLogin">Login</van-button>
         <div class="tis">Partner Entry</div>
       </div>
@@ -55,10 +55,10 @@
   export default {
     data() {
       return {
-        password: "", // test@135
+        password: "test@135", // test@135
         checked: false,
         form: {
-          Identity: "", // 用户名test_public@demo
+          Identity: "test_public@demo", // 用户名test_public@demo
           EncryptedPassword: "",
           HashedPassword: "", // md5加密码
           OneTimePassword: ""
@@ -71,18 +71,6 @@
       },
       userInfo() {
         return this.$store.state.userInfo
-      }
-    },
-    onShow() {
-      const userInfo = this.$store.state.userInfo
-      console.log("userInfo", userInfo)
-      const len = Object.keys(userInfo).length
-      console.log("len", len)
-      if (len > 0) {
-        // 存在用户信息，表示有记住我功能
-        wx.switchTab({
-          url: "/pages/index/main"
-        })
       }
     },
     methods: {
@@ -124,12 +112,9 @@
         this.$fly.post("/Api/Security/AccessTokens", this.form)
           .then((res) => {
             if (res) {
+              res.time = new Date().getTime() + 7 * 24 * 3600 * 1000
               console.log(res)
-              if (this.checked) {
-                // 记住我，保存到缓存
-                this.$store.commit("setUserInfo", res)
-                this.$store.commit("setRemember", true)
-              }
+              this.$store.commit("setUserInfo", res)
               wx.switchTab({
                 url: "/pages/index/main"
               })

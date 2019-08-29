@@ -68,6 +68,7 @@
         return this.$t("message")
       },
       customerTag() {
+        console.log(this.$store.state.userInfo,'this.$store.state.userInfo')
         return this.$store.state.userInfo.CustomerTag
       }
     },
