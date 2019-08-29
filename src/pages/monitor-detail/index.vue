@@ -28,7 +28,7 @@
     <div class="progress-list" style="padding-left: 0;padding-right: 0">
 
       <div class="pad-l-r-30">
-        <my-progress :number="ping" :total="100" process-color="#E60012" left-text="ping" icon="cancel">
+        <my-progress :number="ping" :total="100" :process-color="pingColor" left-text="ping">
         </my-progress>
       </div>
 
@@ -202,7 +202,8 @@
         memoryData: [], // interface数据
         memoryList: [],
         oldActice: [], // 存储以前打开过的接口率
-        ping:0
+        ping: 0,
+        pingColor: "red"
       }
     },
     mounted() {
@@ -215,7 +216,7 @@
       this.getPing(deviceId)
       this.getPerformance(deviceId)
     },
-    onUnload(){
+    onUnload() {
       this.cpuData = []
       this.cpuList = []
       this.interfaceData = []
@@ -286,13 +287,23 @@
       },
 
       getPing(deviceId) {
+        const _this = this
         this.$fly.get(`Api/Nms/Poller/PollerRequest/Ping/Start/${deviceId}`).then(async (res) => {
+          _this.ping = 100
           if (res) {
             delete res.Name
             let num = 1
             while (num < 5) {
               const rst = await this._getPing(res)
               if (rst) {
+                _this.ping = 100
+                _this.pingColor = "#5CB85C"
+                if (rst.PingResponseItems.length > 0) {
+                  const item = rst.PingResponseItems[rst.PingResponseItems.length - 1]
+                  if (item.RttMSec >= 50) {
+                    _this.pingColor = "yello"
+                  }
+                }
                 break
               } else {
                 num++
@@ -385,11 +396,11 @@
                 type = "cpu"
               }
 
-             const ItemData =  newData.map(item=>item.ItemId)
-             const ChartIdData =  newData.map(item=>item.ChartId)
+              const ItemData = newData.map(item => item.ItemId)
+              const ChartIdData = newData.map(item => item.ChartId)
 
 
-              if(ItemData.indexOf(item.ItemId)>-1&&ChartIdData.indexOf(chart.ChartId)>-1){
+              if (ItemData.indexOf(item.ItemId) > -1 && ChartIdData.indexOf(chart.ChartId) > -1) {
                 // 已经有重复项目
                 return
               }
@@ -407,7 +418,6 @@
             }
           })
         })
-
 
 
         return newData

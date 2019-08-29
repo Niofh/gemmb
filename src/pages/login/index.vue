@@ -15,7 +15,8 @@
           placeholder="Please input username"
           @change="onChangeUserName"
         >
-          <img class="username-icon" slot="left-icon" src="https://wechat.logicalisservice.com/images/username.png" alt="">
+          <img class="username-icon" slot="left-icon" src="https://wechat.logicalisservice.com/images/username.png"
+               alt="">
         </van-field>
         <div class="blcok"></div>
         <van-field
@@ -54,10 +55,10 @@
   export default {
     data() {
       return {
-        password: "test@135",
+        password: "", // test@135
         checked: false,
         form: {
-          Identity: "test_public@demo", // 用户名
+          Identity: "", // 用户名test_public@demo
           EncryptedPassword: "",
           HashedPassword: "", // md5加密码
           OneTimePassword: ""
@@ -74,7 +75,7 @@
     },
     onShow() {
       const userInfo = this.$store.state.userInfo
-      console.log('userInfo',userInfo)
+      console.log("userInfo", userInfo)
       const len = Object.keys(userInfo).length
       console.log("len", len)
       if (len > 0) {
@@ -134,7 +135,7 @@
               })
             }
           })
-          .catch(err=>{
+          .catch(err => {
 
           })
           .finally(() => {
