@@ -1,7 +1,7 @@
 <template>
   <div class="monitor" @click="pageClick">
     <div class="table-wrap">
-      <my-table-row :rows="rows" :is-show-select.sync="isShowSelect"></my-table-row>
+      <my-table-row :rows="rows" :is-show-select.sync="isShowSelect" @onSelectOption="onSelectOption"></my-table-row>
       <div class="my-table-cell"
            v-for="c in deviceList"
            :key="c.DeviceId"
@@ -15,7 +15,7 @@
           </div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[2].width}">
-          <div class="left ">{{c.IPAddress|| '--'}}</div>
+          <div class="left ">{{c.IPAddress|| "--"}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[3].width}">
           <div class="left">{{c.LocationName}}</div>
@@ -24,7 +24,7 @@
       <!--      <my-pagination :pages="10"></my-pagination>-->
     </div>
     <div class="station"></div>
-    <my-footer :active="1" />
+    <my-footer :active="1"/>
   </div>
 </template>
 
@@ -32,14 +32,14 @@
   import myFooter from "@/components/my-footer"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import {selectOptions, Severity} from "@/utils/constant";
-  import {SeverityStatus} from "../../utils/constant";
+  import { selectOptions, Severity } from "@/utils/constant"
+  import { SeverityStatus } from "../../utils/constant"
 
   export default {
     mixins: [myTableRowMixin],
     components: {
       "my-footer": myFooter,
-      "my-table-row": myTableRow,
+      "my-table-row": myTableRow
     },
     computed: {
       i18n() {
@@ -55,7 +55,8 @@
             width: "20%",
             name: i18n.Status,
             isArrow: true,
-            selectOptions: selectOptions.slice(0, 5)
+            selectOptions: selectOptions.slice(0, 5),
+            type: "Severity"
           },
           {
             width: "28%",
@@ -78,8 +79,9 @@
     data() {
       return {
         deviceList: [],
+        oldList: [],
         Severity: Severity,
-        SeverityStatus: SeverityStatus,
+        SeverityStatus: SeverityStatus
       }
     },
     mounted() {
@@ -91,6 +93,16 @@
         this.$fly.get(`Api/Nms/Customers/${this.customerTag}/DeviceStatus`).then(res => {
           if (res && res.length) {
             this.deviceList = res
+            this.oldList = res
+          }
+        })
+      },
+      onSelectOption(params) {
+        console.log(params)
+        const selectId = params.select.id
+        this.deviceList = this.oldList.filter(item => {
+          if (item[params.item.type] === selectId) {
+            return item
           }
         })
       }
