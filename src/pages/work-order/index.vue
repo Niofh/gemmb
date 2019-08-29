@@ -3,7 +3,8 @@
     <div class="header">{{i18n.faultList}}</div>
     <div class="table-wrap">
       <my-table-row :rows="rows"></my-table-row>
-      <div class="my-table-cell" v-for="c in bugWorkList" :key="c.TicketID" :style="{'backgroundColor':c.PriorityHtmlColor}" >
+      <div class="my-table-cell" v-for="c in bugWorkList" :key="c.TicketID"
+           :style="{'backgroundColor':c.PriorityHtmlColor}">
         <div class="my-cell-item" :style="{'width':rows[0].width}">
           <div class="left">
             {{c.Priority}}
@@ -23,7 +24,8 @@
     <div class="header">{{i18n.changeTicket}}</div>
     <div class="table-wrap">
       <my-table-row :rows="changeRows"></my-table-row>
-      <div class="my-table-cell" v-for="c in changeWorkList" :key="c.TicketID" :style="{'backgroundColor':c.PriorityHtmlColor}">
+      <div class="my-table-cell" v-for="c in changeWorkList" :key="c.TicketID"
+           :style="{'backgroundColor':c.PriorityHtmlColor}">
         <div class="my-cell-item" :style="{'width':changeRows[0].width}">
           <div class="left">{{c.TicketID}}</div>
         </div>
@@ -44,7 +46,7 @@
   import myTable from "@/components/my-table-row"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myFooter from "@/components/my-footer/index.vue"
-  import {BUG_STATUS_CODE, CHANGE_STATUS_CODE, CHANGE_TYPE_CODE} from "../../utils/constant";
+  import { BUG_STATUS_CODE, CHANGE_STATUS_CODE, CHANGE_TYPE_CODE } from "../../utils/constant"
 
   export default {
     components: {
@@ -107,12 +109,16 @@
         changeWorkList: [], // 变更工单列表
         BUG_STATUS_CODE,
         CHANGE_TYPE_CODE,
-        CHANGE_STATUS_CODE,
+        CHANGE_STATUS_CODE
       }
     },
     mounted() {
+      console.log('mounted')
+      this.bugWorkList = []
+      this.changeWorkList = []
       this.getBusWork()
     },
+
     methods: {
       getBusWork() {
         this.$fly.post(`Api/ServiceDesk/Customers/${this.customerTag}/TicketSearch`, {
@@ -123,42 +129,43 @@
           "Priorities": [1, 2, 3, 4]
         }).then((res) => {
           if (res) {
-            const ticketSearchResults = res.TicketSearchResults;
+
+            const ticketSearchResults = res.TicketSearchResults
             this.getResults(ticketSearchResults)
           }
         })
 
       },
-      async getResults(ticketSearchResults){
+      async getResults(ticketSearchResults) {
         for (let i = 0; i < ticketSearchResults.length; i++) {
           const item = ticketSearchResults[i]
           console.log(item)
-          const TicketId =item.TicketId
-          const Device =await this.getDevice(TicketId)
+          const TicketId = item.TicketId
+          const Device = await this.getDevice(TicketId)
 
-          if(item.TicketIncidentDetail){
+          if (item.TicketIncidentDetail) {
             this.bugWorkList.push({
-              TicketId:item.TicketIncidentDetail.TicketId,
-              IncidentState:item.TicketIncidentDetail.IncidentState,
-              Priority:`P`+item.Priority,
-              PriorityHtmlColor:item.PriorityHtmlColor,
+              TicketId: item.TicketIncidentDetail.TicketId,
+              IncidentState: item.TicketIncidentDetail.IncidentState,
+              Priority: `P` + item.Priority,
+              PriorityHtmlColor: item.PriorityHtmlColor
             })
           }
-          if(item.TicketChangeDetail){
+          if (item.TicketChangeDetail) {
             this.changeWorkList.push({
-              PriorityHtmlColor:item.PriorityHtmlColor,
-              TicketId:item.TicketIncidentDetail.TicketId,
-              IncidentState:item.TicketIncidentDetail.IncidentState,
-              ChangeState:item.TicketIncidentDetail.ChangeState,
-              ChangeType:item.TicketIncidentDetail.ChangeType,
+              PriorityHtmlColor: item.PriorityHtmlColor,
+              TicketId: item.TicketIncidentDetail.TicketId,
+              IncidentState: item.TicketIncidentDetail.IncidentState,
+              ChangeState: item.TicketIncidentDetail.ChangeState,
+              ChangeType: item.TicketIncidentDetail.ChangeType
             })
           }
 
         }
-        console.log('this.bugWorkList',this.bugWorkList)
-        console.log('this.changeWorkList',this.changeWorkList)
+        console.log("this.bugWorkList", this.bugWorkList)
+        console.log("this.changeWorkList", this.changeWorkList)
       },
-      async getDevice(ticketId){
+      async getDevice(ticketId) {
         return this.$fly.get(`Api/ServiceDesk/Tickets/${ticketId}/Devices/Assignable`)
       }
     }

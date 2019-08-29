@@ -16,7 +16,9 @@
           </div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[2].width}">
-          <div class="left ">{{bugWork.DeviceName|| '--'}}</div>
+          <div class="left ">
+            <a class="link" :href="'/pages/monitor-detail/main?deviceId='+bugWork.DeviceId">{{bugWork.DeviceName|| '--'}}</a>
+          </div>
         </div>
         <div class="my-cell-item" :style="{'width':rows[3].width}">
           <div class="left">{{BUG_STATUS_CODE[bugWork.IncidentState]}}</div>
@@ -165,6 +167,7 @@
           t.DeviceAlertItems.forEach(item => {
             if (item.TicketId === ticketId) {
               this.bugWork.DeviceName = item.DeviceName
+              this.bugWork.DeviceId = item.DeviceId
             }
             this.deviceList = t.DeviceAlertItems.map(item=>{
               const {t1, t2} = formatTime(new Date(item.DeviceLocalTime))
@@ -172,7 +175,8 @@
               return {
                 ...item,
                 time: t1 + ' ' + t2,
-                username:username
+                username:username,
+
               }
             })
           })

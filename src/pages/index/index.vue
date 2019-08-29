@@ -16,11 +16,11 @@
 
     <div class="header">{{i18n.alertsSummary}}</div>
     <div class="progress-list">
-
       <my-progress v-for="(item,key) in waringObj"
                    :key="key"
                    :left-text="key"
                    :number="item.number"
+                   :process-color="item.color"
                    :total="waringTotal"
                    :right-text="item.number">
       </my-progress>
@@ -29,16 +29,16 @@
 
     <div class="header">{{i18n.ticketSummary}}</div>
     <div class="progress-list">
-      <my-progress  :number="work.p1" :total="workTotal" left-text="p1" :right-text="work.p1" process-color="#E60012" >
+      <my-progress :number="work.p1" :total="workTotal" left-text="p1" :right-text="work.p1" process-color="#E60012">
 
       </my-progress>
-      <my-progress left-text="P2" :right-text="work.p2"  process-color="#448ACA"  :number="work.p2" :total="workTotal">
+      <my-progress left-text="P2" :right-text="work.p2" process-color="#448ACA" :number="work.p2" :total="workTotal">
 
       </my-progress>
       <my-progress left-text="P3" :right-text="work.p3" process-color="#E9d310" :number="work.p3" :total="workTotal">
 
       </my-progress>
-      <my-progress left-text="P4" :right-text="work.p4" process-color="#F39800"  :number="work.p4" :total="workTotal">
+      <my-progress left-text="P4" :right-text="work.p4" process-color="#F39800" :number="work.p4" :total="workTotal">
 
       </my-progress>
 
@@ -68,7 +68,7 @@
         return this.$t("message")
       },
       customerTag() {
-        console.log(this.$store.state.userInfo,'this.$store.state.userInfo')
+        console.log(this.$store.state.userInfo, "this.$store.state.userInfo")
         return this.$store.state.userInfo.CustomerTag
       }
     },
@@ -79,16 +79,20 @@
         devicesObj: {},// 设备状态数量
         waringObj: { // 警告数量
           Critical: {
-            color: Severity.Critical.color
+            color: Severity.Critical.color,
+            number: 0
           },
           Warning: {
-            color: Severity.Warning.color
+            color: Severity.Warning.color,
+            number: 0
           },
           Minor: {
             color: Severity.Minor.color
+            , number: 0
           },
           Major: {
             color: Severity.Major.color
+            , number: 0
           }
         },
         waringTotal: 0,
@@ -137,7 +141,7 @@
                 this.devicesObj[item.Severity].number = this.devicesObj[item.Severity].number + 1
               }
             })
-            console.log(this.devicesObj)
+            console.log("this.devicesObj", this.devicesObj)
           }
         })
       },
@@ -145,13 +149,16 @@
       getWarning() {
         this.$fly.get(`Api/Nms/Customers/${this.customerTag}/AlertSummary`).then(res => {
           if (res && res.length > 0) {
-            const data = res[0]
-            this.waringObj.Critical.number = data.Critical
-            this.waringObj.Warning.number = data.Warning
-            this.waringObj.Minor.number = data.Minor
-            this.waringObj.Major.number = data.Major
-            this.waringTotal = data.Total
+            res.forEach(item => {
+              this.waringObj.Critical.number += item.Critical
+              this.waringObj.Warning.number += item.Warning
+              this.waringObj.Minor.number += item.Minor
+              this.waringObj.Major.number += item.Major
+              this.waringTotal += item.Total
+            })
+
           }
+          console.log("this.waringObj", this.waringObj)
         })
       },
       // 获取工单总结
@@ -167,14 +174,11 @@
             res.TicketSearchResults.forEach(item => {
               if (item.Priority === 1) {
                 this.work.p1++
-              }
-              else if (item.Priority === 2) {
+              } else if (item.Priority === 2) {
                 this.work.p2++
-              }
-              else if (item.Priority === 3) {
+              } else if (item.Priority === 3) {
                 this.work.p3++
-              }
-              else if (item.Priority === 4) {
+              } else if (item.Priority === 4) {
                 this.work.p4++
               }
             })
