@@ -17,12 +17,7 @@ App.mpType = "app"
 
 // 全局mixin
 Vue.mixin({
-  onShow() {
 
-
-
-
-  }
 })
 
 const app = new Vue({

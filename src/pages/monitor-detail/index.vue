@@ -514,23 +514,23 @@
 
           this.activeNamesInterface = this.oldActice = event.mp.detail
 
+          paramsItem.inIcon = "warn"
+          paramsItem.outIcon = "warn"
           if (resData.ChartData) {
             const splitList = resData.ChartData.split(/[\n\s]/).filter(item => !!item)
-            console.log(splitList)
-
             const str = splitList[splitList.length - 1]
             const valueList = str.split(",")
-            console.log(valueList)
+            console.log(valueList===listName)
             if (listName === "interfaceList") {
               paramsItem.in = Number(valueList[valueList.length - 1])
               paramsItem.out = Number(valueList[valueList.length - 2])
 
-              paramsItem.inIcon = "warn"
+
               if (paramsItem.in >= 0 && paramsItem.in <= 70) {
                 paramsItem.inIcon = "success"
               }
 
-              paramsItem.outIcon = "warn"
+
               if (paramsItem.out >= 0 && paramsItem.out <= 70) {
                 paramsItem.outIcon = "success"
               }
@@ -541,7 +541,7 @@
               paramsItem.value = Number(valueList[valueList.length - 2])
             }
 
-            console.log(paramsItem)
+            console.log('paramsItem',paramsItem)
 
           }
         } finally {

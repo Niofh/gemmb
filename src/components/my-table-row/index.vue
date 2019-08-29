@@ -7,9 +7,8 @@
              v-for="(item,i) in rows"
              :key="i"
              :style="{'width':item.width}"
-             @click="onRowClick(item)"
         >
-          <div class="header-item" :data-index="index" @click.stop="onSelect(i,$event)">
+          <div class="header-item" :data-index="index" @click.stop="onSelect(item,i,$event)">
             <div class="header-col">
               <span class="name">{{item.name}}</span>
               <van-icon v-if="item.isArrow" custom-class="icon-arrow"
@@ -51,8 +50,7 @@
       }
     },
     methods: {
-      onSelect(index, e) {
-        console.log('哈哈哈')
+      onSelect(item,index, e) {
 
         console.log(this.isShowSelect,'this.isShowSelect')
         if (this.isShowSelect === false) { //点击了空白处
@@ -71,6 +69,8 @@
         }
         this.index = index
         this.isShowSelect = true
+
+        this.onRowClick(item)
       },
       arrow() {
         return "arrow-down"
@@ -141,6 +141,7 @@
         left: 0
         top rpx(80)
         background #000
+
       }
 
       .wrap {

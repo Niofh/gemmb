@@ -1,7 +1,10 @@
 <template>
   <div class="monitor" @click="pageClick">
     <div class="table-wrap">
-      <my-table-row :rows="rows" :is-show-select.sync="isShowSelect" @onSelectOption="onSelectOption"></my-table-row>
+      <my-table-row :rows="rows" :is-show-select.sync="isShowSelect"
+                    @onSelectOption="onSelectOption"
+                    @onRowClick="onRowClick"
+      ></my-table-row>
       <div class="my-table-cell"
            v-for="c in deviceList"
            :key="c.DeviceId"
@@ -24,22 +27,27 @@
       <!--      <my-pagination :pages="10"></my-pagination>-->
     </div>
     <div class="station"></div>
-    <my-footer :active="1"/>
+    <van-toast id="van-toast" />
+    <my-footer :active="1" />
+    <my-search :show="searchShow" @search="onSearch" @clear="onClear" @close="onClose"></my-search>
   </div>
 </template>
 
 <script>
   import myFooter from "@/components/my-footer"
   import myTableRow from "@/components/my-table-row/index.vue"
+  import mySearch from "@/components/my-search/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import { selectOptions, Severity } from "@/utils/constant"
-  import { SeverityStatus } from "../../utils/constant"
+  import {selectOptions, Severity} from "@/utils/constant"
+  import {SeverityStatus} from "../../utils/constant"
+  import Toast from "@/../static/vant/toast/toast"
 
   export default {
     mixins: [myTableRowMixin],
     components: {
       "my-footer": myFooter,
-      "my-table-row": myTableRow
+      "my-table-row": myTableRow,
+      "my-search": mySearch,
     },
     computed: {
       i18n() {
@@ -61,17 +69,20 @@
           {
             width: "28%",
             name: i18n.Hostname,
-            isArrow: true
+            isArrow: true,
+            type: "DeviceName"
           },
           {
             width: "28%",
             name: i18n.IP,
-            isArrow: true
+            isArrow: true,
+            type: "IPAddress"
           },
           {
             width: "24%",
             name: i18n.location,
-            isArrow: true
+            isArrow: true,
+            type: "LocationName"
           }
         ]
       }
@@ -81,7 +92,10 @@
         deviceList: [],
         oldList: [],
         Severity: Severity,
-        SeverityStatus: SeverityStatus
+        SeverityStatus: SeverityStatus,
+        searchShow: false,
+        searchValue: '',
+        searchType: ''
       }
     },
     mounted() {
@@ -105,6 +119,38 @@
             return item
           }
         })
+        this.isShowSelect = false
+      },
+      onRowClick(params) {
+        this.searchType = params.item.type
+        if (this.searchType === 'Severity') {
+          return
+        }
+        this.searchShow = true
+      },
+      onSearch(value) {
+        this.searchValue = value
+        if (!value) {
+          this.deviceList = this.oldList.map(item => item)
+        } else {
+          this.deviceList = this.oldList.filter(item => {
+            if (item[this.searchType] && item[this.searchType].toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1) {
+              return item
+            }
+          })
+        }
+        if (this.deviceList.length === 0) {
+          Toast("暂无数据")
+          return
+        }
+        this.searchShow = false
+      },
+      onClear() {
+        this.searchValue = ''
+        this.searchType = ''
+      },
+      onClose() {
+        this.searchShow = false
       }
     }
 

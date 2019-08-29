@@ -1,7 +1,14 @@
 <template>
   <div class="my-search">
     <van-popup :show="show" position="top" custom-class="popup-class" @close="onClose">
-      <van-search :value="value" placeholder="请输入搜索关键词" @search="onSearch" @clear="onClear" />
+      <van-search
+        :value="value"
+        :use-action-slot="true"
+        placeholder="请输入搜索关键词"
+        @change="onChange"
+        @search="onSearch" @clear="onClear">
+        <view slot="action" @click="onSearch">搜索</view>
+      </van-search>
     </van-popup>
   </div>
 </template>
@@ -14,17 +21,28 @@
         type: Boolean,
         default: false
       },
-      value: String
+
+    },
+    data() {
+      return {
+        value: ''
+      }
     },
     methods: {
       onClose() {
         this.$emit('close')
       },
-      onSearch() {
-        this.$emit('search',this.value)
+      onChange(e) {
+        this.value = e.mp.detail
+        this.$emit('change',e.mp.detail)
+      },
+      onSearch(e) {
+        console.log(this.value)
+        this.$emit('search', this.value)
       },
       onClear() {
-        this.$emit('onClear')
+        this.$emit('clear')
+
       }
     }
   }

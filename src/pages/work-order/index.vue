@@ -1,8 +1,14 @@
 <template>
-  <div class="work-order">
+  <div class="work-order" @click="pageClick">
     <div class="header">{{i18n.faultList}}</div>
     <div class="table-wrap">
-      <my-table-row :rows="rows"></my-table-row>
+      <div class="table-zindex">
+        <my-table-row :rows="rows"
+                      :is-show-select.sync="isShowSelect"
+                      @onSelectOption="onSelectOption"
+                      @onRowClick="onRowClick"
+        ></my-table-row>
+      </div>
       <div class="my-table-cell" v-for="c in bugWorkList" :key="c.TicketID"
            :style="{'backgroundColor':c.PriorityHtmlColor}">
         <div class="my-cell-item" :style="{'width':rows[0].width}">
@@ -23,7 +29,12 @@
 
     <div class="header">{{i18n.changeTicket}}</div>
     <div class="table-wrap">
-      <my-table-row :rows="changeRows"></my-table-row>
+      <my-table-row :rows="changeRows"
+                    :is-show-select.sync="isShowSelect"
+                    @onSelectOption="onSelectOption1"
+                    @onRowClick="onRowClick1">
+
+      </my-table-row>
       <div class="my-table-cell" v-for="c in changeWorkList" :key="c.TicketID"
            :style="{'backgroundColor':c.PriorityHtmlColor}">
         <div class="my-cell-item" :style="{'width':changeRows[0].width}">
@@ -37,7 +48,8 @@
         </div>
       </div>
     </div>
-
+    <my-search :show="searchShow" @search="onSearch" @clear="onClear" @close="onClose"></my-search>
+    <van-toast id="van-toast" />
     <my-footer :active="2"></my-footer>
   </div>
 </template>
@@ -45,14 +57,19 @@
 <script>
   import myTable from "@/components/my-table-row"
   import myTableRow from "@/components/my-table-row/index.vue"
+  import mySearch from "@/components/my-search/index.vue"
   import myFooter from "@/components/my-footer/index.vue"
-  import { BUG_STATUS_CODE, CHANGE_STATUS_CODE, CHANGE_TYPE_CODE } from "../../utils/constant"
+  import {BUG_STATUS_CODE, CHANGE_STATUS_CODE, CHANGE_TYPE_CODE, PRIORITY_CODE} from "../../utils/constant"
+  import myTableRowMixin from "../../mixins/myTableRowMixin";
+  import Toast from "@/../static/vant/toast/toast"
 
   export default {
+    mixins: [myTableRowMixin],
     components: {
       "my-table": myTable,
       "my-table-row": myTableRow,
-      "my-footer": myFooter
+      "my-footer": myFooter,
+      "my-search": mySearch
     },
     computed: {
       i18n() {
@@ -67,12 +84,15 @@
           {
             width: "23%",
             name: i18n.Priority,
-            isArrow: true
+            isArrow: true,
+            selectOptions: PRIORITY_CODE,
+            type: "Priority"
           },
           {
             width: "27%",
             name: i18n.TicketID,
-            isArrow: true
+            isArrow: true,
+            type: "TicketId"
           },
           {
             width: "50%",
@@ -87,12 +107,15 @@
           {
             width: "23%",
             name: i18n.TicketID,
-            isArrow: true
+            isArrow: true,
+            type: "TicketId"
           },
           {
             width: "27%",
             name: i18n.Type,
-            isArrow: true
+            isArrow: true,
+            selectOptions: this.CHANGE_TYPE_CODE_select,
+            type: "ChangeType"
           },
           {
             width: "50%",
@@ -106,16 +129,29 @@
     data() {
       return {
         bugWorkList: [], // 故障工单列表
+        bugWorkOldList: [], // 故障工单列表
         changeWorkList: [], // 变更工单列表
+        changeWorkOldList: [], // 变更工单列表
         BUG_STATUS_CODE,
         CHANGE_TYPE_CODE,
-        CHANGE_STATUS_CODE
+        CHANGE_STATUS_CODE,
+        searchShow: false,
+        searchValue: '',
+        searchType: '',
+        CHANGE_TYPE_CODE_select: []
       }
     },
     mounted() {
       console.log('mounted')
-      this.bugWorkList = []
-      this.changeWorkList = []
+
+      const dataCode = []
+      for (let key in CHANGE_TYPE_CODE) {
+        dataCode.push({
+          id: key,
+          name: CHANGE_TYPE_CODE[key]
+        })
+      }
+      this.CHANGE_TYPE_CODE_select = dataCode
       this.getBusWork()
     },
 
@@ -141,10 +177,13 @@
           const item = ticketSearchResults[i]
           console.log(item)
           const TicketId = item.TicketId
-          const Device = await this.getDevice(TicketId)
 
+          // const Device = await this.getDevice(TicketId)
+
+          const dataTicketIncidentDetail = []
+          const dataTicketChangeDetail = []
           if (item.TicketIncidentDetail) {
-            this.bugWorkList.push({
+            dataTicketIncidentDetail.push({
               TicketId: item.TicketIncidentDetail.TicketId,
               IncidentState: item.TicketIncidentDetail.IncidentState,
               Priority: `P` + item.Priority,
@@ -152,7 +191,7 @@
             })
           }
           if (item.TicketChangeDetail) {
-            this.changeWorkList.push({
+            dataTicketChangeDetail.push({
               PriorityHtmlColor: item.PriorityHtmlColor,
               TicketId: item.TicketIncidentDetail.TicketId,
               IncidentState: item.TicketIncidentDetail.IncidentState,
@@ -161,12 +200,101 @@
             })
           }
 
+          this.bugWorkList = this.bugWorkOldList = dataTicketIncidentDetail
+          this.changeWorkList = this.changeWorkOldList = dataTicketChangeDetail
+
         }
         console.log("this.bugWorkList", this.bugWorkList)
         console.log("this.changeWorkList", this.changeWorkList)
       },
       async getDevice(ticketId) {
         return this.$fly.get(`Api/ServiceDesk/Tickets/${ticketId}/Devices/Assignable`)
+      },
+      onSelectOption(params) {
+        console.log(params)
+        const selectId = params.select.id
+        console.log(this.bugWorkOldList)
+        this.bugWorkList = this.bugWorkOldList.filter(item => {
+          if (item[params.item.type] === 'P' + selectId) {
+            return item
+          }
+        })
+        this.isShowSelect = false
+      },
+      onRowClick(params) {
+        this.searchType = params.item.type
+        if (this.searchType === 'Priority' || !this.searchType) {
+          return
+        }
+        this.sType = 1
+        this.searchShow = true
+      },
+
+      onSelectOption1(params) {
+        console.log(params)
+        const selectId = params.select.id
+        this.changeWorkList = this.changeWorkOldList.filter(item => {
+          if (item[params.item.type] === selectId) {
+            return item
+          }
+        })
+        this.isShowSelect = false
+      },
+      onRowClick1(params) {
+        this.searchType = params.item.type
+        if (this.searchType === 'ChangeType' || !this.searchType) {
+          return
+        }
+        this.sType = 2
+        this.searchShow = true
+      },
+      onSearch(value) {
+        if (this.sType === 1) {
+          this.searchValue = value
+          if (!value) {
+            this.bugWorkList = this.bugWorkOldList.map(item => item)
+          } else {
+            this.bugWorkList = this.bugWorkOldList.filter(item => {
+              if (item[this.searchType] + '' && item[this.searchType].toString().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1) {
+                return item
+              }
+            })
+          }
+          if (this.bugWorkList.length === 0) {
+            Toast("暂无数据")
+            return
+          }
+          this.searchShow = false
+        } else {
+          this.onSearch1(value)
+        }
+
+      },
+      onSearch1(value) {
+
+
+        this.searchValue = value
+        if (!value) {
+          this.changeWorkList = this.changeWorkOldList.map(item => item)
+        } else {
+          this.changeWorkList = this.changeWorkOldList.filter(item => {
+            if (item[this.searchType] + '' && item[this.searchType].toString().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1) {
+              return item
+            }
+          })
+        }
+        if (this.changeWorkList.length === 0) {
+          Toast("暂无数据")
+          return
+        }
+        this.searchShow = false
+      },
+      onClear() {
+        this.searchValue = ''
+        this.searchType = ''
+      },
+      onClose() {
+        this.searchShow = false
       }
     }
 
@@ -175,5 +303,8 @@
 
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"
-
+  .table-zindex {
+    position relative
+    z-index 10
+  }
 </style>

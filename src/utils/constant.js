@@ -104,3 +104,11 @@ export const HISTORY_WORK_STATUS = {
   3: 'Request',
 }
 
+// 优先级
+export const PRIORITY_CODE = [
+  {id: 1, name: 'P1'},
+  {id: 2, name: 'P2'},
+  {id: 3, name: 'P3'},
+  {id: 4, name: 'P4'},
+]
+
