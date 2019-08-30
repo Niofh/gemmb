@@ -176,7 +176,7 @@
           {
             width: "19%",
             name: i18n.Status,
-            isArrow: true
+            isArrow: false
           },
           {
             width: "20%",
@@ -294,7 +294,7 @@
           _this.ping = 100
           if (res) {
             delete res.Name
-            let num = 1
+            let num = 0
             while (num < 5) {
               const rst = await this._getPing(res)
               if (rst) {
@@ -302,9 +302,9 @@
                 _this.pingColor = "#5CB85C"
                 if (rst.PingResponseItems.length > 0) {
                   const item = rst.PingResponseItems[rst.PingResponseItems.length - 1]
-                  if (item.RttMSec >= 50) {
-                    _this.pingColor = "yello"
-                  }
+                  // if (item.RttMSec >= 50) {
+                  //   _this.pingColor = "yello"
+                  // }
                 }
                 break
               } else {
@@ -414,7 +414,7 @@
                 "Start": "",
                 "End": "",
                 "DataRollupType": 0,// 默认
-                name: `${chart.Label.split(" ")[0]}-${name}-Usage-${chart.ChartId}`,
+                name: `${chart.Label.split(" ")[0]}-${name}-Usage`,
                 type: `${type}List-${item.ItemId}-${chart.Label.split(" ")[0]}-${name}-Usage-${chart.ChartId}`
               })
             }

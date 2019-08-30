@@ -93,22 +93,22 @@
           {
             width: "23%",
             name: i18n.Priority,
-            isArrow: true
+            isArrow: false
           },
           {
             width: "27%",
             name: i18n.TicketID,
-            isArrow: true
+            isArrow: false
           },
           {
             width: "25%",
             name: i18n.Device,
-            isArrow: true
+            isArrow: false
           },
           {
             width: "25%",
             name: i18n.Status,
-            isArrow: true
+            isArrow: false
           }
         ]
       },

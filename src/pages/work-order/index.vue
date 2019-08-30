@@ -99,7 +99,7 @@
           {
             width: "50%",
             name: i18n.Status,
-            isArrow: true
+            isArrow: false
           }
         ]
       },
@@ -122,7 +122,7 @@
           {
             width: "50%",
             name: i18n.Status,
-            isArrow: true
+            isArrow: false
           }
         ]
       }
