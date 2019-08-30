@@ -1,5 +1,6 @@
 <template>
   <div class="monitor" @click="pageClick">
+    <div class="header">{{i18n.deviceList }}</div>
     <div class="table-wrap">
       <my-table-row :rows="rows" :is-show-select.sync="isShowSelect"
                     @onSelectOption="onSelectOption"
@@ -27,8 +28,8 @@
       <!--      <my-pagination :pages="10"></my-pagination>-->
     </div>
     <div class="station"></div>
-    <van-toast id="van-toast" />
-    <my-footer :active="1" />
+    <van-toast id="van-toast"/>
+    <my-footer :active="1"/>
     <my-search :show="searchShow" @search="onSearch" @clear="onClear" @close="onClose"></my-search>
   </div>
 </template>
@@ -38,8 +39,8 @@
   import myTableRow from "@/components/my-table-row/index.vue"
   import mySearch from "@/components/my-search/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import {selectOptions, Severity} from "@/utils/constant"
-  import {SeverityStatus} from "../../utils/constant"
+  import { selectOptions, Severity } from "@/utils/constant"
+  import { SeverityStatus } from "../../utils/constant"
   import Toast from "@/../static/vant/toast/toast"
 
   export default {
@@ -47,7 +48,7 @@
     components: {
       "my-footer": myFooter,
       "my-table-row": myTableRow,
-      "my-search": mySearch,
+      "my-search": mySearch
     },
     computed: {
       i18n() {
@@ -58,12 +59,13 @@
       },
       rows() {
         const i18n = this.$t("message")
+        selectOptions.unshift({ id: "", name: "all" })
         return [
           {
             width: "20%",
             name: i18n.Status,
             isArrow: true,
-            selectOptions: selectOptions.slice(0, 5),
+            selectOptions: selectOptions.slice(0, 6),
             type: "Severity"
           },
           {
@@ -94,8 +96,8 @@
         Severity: Severity,
         SeverityStatus: SeverityStatus,
         searchShow: false,
-        searchValue: '',
-        searchType: ''
+        searchValue: "",
+        searchType: ""
       }
     },
     mounted() {
@@ -114,16 +116,21 @@
       onSelectOption(params) {
         console.log(params)
         const selectId = params.select.id
-        this.deviceList = this.oldList.filter(item => {
-          if (item[params.item.type] === selectId) {
-            return item
-          }
-        })
+        if (selectId === "") {
+          this.deviceList = this.oldList.map(item => item)
+        } else {
+          this.deviceList = this.oldList.filter(item => {
+            if (item[params.item.type] === selectId) {
+              return item
+            }
+          })
+        }
+
         this.isShowSelect = false
       },
       onRowClick(params) {
         this.searchType = params.item.type
-        if (this.searchType === 'Severity') {
+        if (this.searchType === "Severity") {
           return
         }
         this.searchShow = true
@@ -146,8 +153,8 @@
         this.searchShow = false
       },
       onClear() {
-        this.searchValue = ''
-        this.searchType = ''
+        this.searchValue = ""
+        this.searchType = ""
       },
       onClose() {
         this.searchShow = false

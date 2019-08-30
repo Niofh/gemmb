@@ -1,6 +1,6 @@
 <template>
   <div class="work-order" @click="pageClick">
-    <div class="header">{{i18n.faultList}}</div>
+    <div class="header">{{i18n.faultTicket}}</div>
     <div class="table-wrap">
       <div class="table-zindex">
         <my-table-row :rows="rows"
@@ -30,7 +30,7 @@
     <div class="header">{{i18n.changeTicket}}</div>
     <div class="table-wrap">
       <my-table-row :rows="changeRows"
-                    :is-show-select.sync="isShowSelect"
+                    :is-show-select.sync="isShowSelect1"
                     @onSelectOption="onSelectOption1"
                     @onRowClick="onRowClick1">
 
@@ -49,7 +49,7 @@
       </div>
     </div>
     <my-search :show="searchShow" @search="onSearch" @clear="onClear" @close="onClose"></my-search>
-    <van-toast id="van-toast" />
+    <van-toast id="van-toast"/>
     <my-footer :active="2"></my-footer>
   </div>
 </template>
@@ -59,9 +59,10 @@
   import myTableRow from "@/components/my-table-row/index.vue"
   import mySearch from "@/components/my-search/index.vue"
   import myFooter from "@/components/my-footer/index.vue"
-  import {BUG_STATUS_CODE, CHANGE_STATUS_CODE, CHANGE_TYPE_CODE, PRIORITY_CODE} from "../../utils/constant"
-  import myTableRowMixin from "../../mixins/myTableRowMixin";
+  import { BUG_STATUS_CODE, CHANGE_STATUS_CODE, CHANGE_TYPE_CODE, PRIORITY_CODE } from "../../utils/constant"
+  import myTableRowMixin from "../../mixins/myTableRowMixin"
   import Toast from "@/../static/vant/toast/toast"
+
 
   export default {
     mixins: [myTableRowMixin],
@@ -80,6 +81,7 @@
       },
       rows() {
         const i18n = this.$t("message")
+        PRIORITY_CODE.unshift({ id: "", name: "all" })
         return [
           {
             width: "23%",
@@ -136,15 +138,16 @@
         CHANGE_TYPE_CODE,
         CHANGE_STATUS_CODE,
         searchShow: false,
-        searchValue: '',
-        searchType: '',
-        CHANGE_TYPE_CODE_select: []
+        searchValue: "",
+        searchType: "",
+        CHANGE_TYPE_CODE_select: [],
+        isShowSelect1: false
       }
     },
     mounted() {
-      console.log('mounted')
+      console.log("mounted")
 
-      const dataCode = []
+      const dataCode = [{ id: "", name: "all" }]
       for (let key in CHANGE_TYPE_CODE) {
         dataCode.push({
           id: key,
@@ -213,17 +216,21 @@
       onSelectOption(params) {
         console.log(params)
         const selectId = params.select.id
-        console.log(this.bugWorkOldList)
-        this.bugWorkList = this.bugWorkOldList.filter(item => {
-          if (item[params.item.type] === 'P' + selectId) {
-            return item
-          }
-        })
+        if (selectId === "") {
+          this.bugWorkList = this.bugWorkOldList.map(item => item)
+        } else {
+          this.bugWorkList = this.bugWorkOldList.filter(item => {
+            if (item[params.item.type] === "P" + selectId) {
+              return item
+            }
+          })
+        }
+
         this.isShowSelect = false
       },
       onRowClick(params) {
         this.searchType = params.item.type
-        if (this.searchType === 'Priority' || !this.searchType) {
+        if (this.searchType === "Priority" || !this.searchType) {
           return
         }
         this.sType = 1
@@ -233,20 +240,25 @@
       onSelectOption1(params) {
         console.log(params)
         const selectId = params.select.id
-        this.changeWorkList = this.changeWorkOldList.filter(item => {
-          if (item[params.item.type] === selectId) {
-            return item
-          }
-        })
-        this.isShowSelect = false
+        if (selectId === "") {
+          this.changeWorkList = this.changeWorkOldList.map(item => item)
+        } else {
+          this.changeWorkList = this.changeWorkOldList.filter(item => {
+            if (item[params.item.type] === selectId) {
+              return item
+            }
+          })
+        }
+
+        this.isShowSelect1 = false
       },
       onRowClick1(params) {
         this.searchType = params.item.type
-        if (this.searchType === 'ChangeType' || !this.searchType) {
+        if (this.searchType === "ChangeType" || !this.searchType) {
           return
         }
         this.sType = 2
-        this.searchShow = true
+        this.isShowSelect1 = true
       },
       onSearch(value) {
         if (this.sType === 1) {
@@ -255,7 +267,7 @@
             this.bugWorkList = this.bugWorkOldList.map(item => item)
           } else {
             this.bugWorkList = this.bugWorkOldList.filter(item => {
-              if (item[this.searchType] + '' && item[this.searchType].toString().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1) {
+              if (item[this.searchType] + "" && item[this.searchType].toString().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1) {
                 return item
               }
             })
@@ -278,7 +290,7 @@
           this.changeWorkList = this.changeWorkOldList.map(item => item)
         } else {
           this.changeWorkList = this.changeWorkOldList.filter(item => {
-            if (item[this.searchType] + '' && item[this.searchType].toString().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1) {
+            if (item[this.searchType] + "" && item[this.searchType].toString().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1) {
               return item
             }
           })
@@ -287,14 +299,18 @@
           Toast("暂无数据")
           return
         }
-        this.searchShow = false
+        this.isShowSelect1 = false
       },
       onClear() {
-        this.searchValue = ''
-        this.searchType = ''
+        this.searchValue = ""
+        this.searchType = ""
       },
       onClose() {
         this.searchShow = false
+      },
+      pageClick() {
+        this.isShowSelect1 = false
+        this.isShowSelect = false
       }
     }
 
@@ -303,6 +319,10 @@
 
 <style lang="stylus" scoped>
   @import "~@/assets/stylus/common.styl"
+  .work-order {
+    height 100%
+  }
+
   .table-zindex {
     position relative
     z-index 10
