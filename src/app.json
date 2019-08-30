@@ -25,7 +25,8 @@
     "van-search": "/static/vant/search/index",
     "van-popup": "/static/vant/popup/index",
     "van-collapse": "/static/vant/collapse/index",
-    "van-collapse-item": "/static/vant/collapse-item/index"
+`    "van-collapse-item": "/static/vant/collapse-item/index",
+    "van-datetime-picker": "/static/vant/datetime-picker/index"
 
   },
   "tabBar": {

@@ -101,7 +101,12 @@
 
 
     <div class="table-wrap">
-      <my-table-row :rows="rows" :is-show-select.sync="isShowSelect"></my-table-row>
+      <my-table-row :rows="rows"
+                    :is-show-select.sync="isShowSelect"
+                    @onSelectOption="onSelectOption"
+                    @onRowClick="onRowClick"
+
+      ></my-table-row>
       <div class="my-table-cell history" v-for="(c,index) in historyList" :key="index">
         <div class="my-cell-item" :style="{'width':rows[0].width}">
           <div class="left">
@@ -126,6 +131,18 @@
       </div>
     </div>
     <van-toast id="van-toast"></van-toast>
+    <my-search :show="searchShow" @search="onSearch" @clear="onClear" @close="onClose"></my-search>
+
+
+    <van-popup :show="showTimeMark" position="bottom" @close="onCloseTimeMark">
+      <van-datetime-picker
+        type="datetime"
+        :value="currentDate"
+        @confirm="onTimeConfirm"
+        @cancel="showTimeMark=false"
+      />
+    </van-popup>
+
     <div class="station-min"></div>
   </div>
 </template>
@@ -136,8 +153,9 @@
   import myTable from "@/components/my-table-row"
   import myTableRow from "@/components/my-table-row/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import { BUG_STATUS_CODE, HISTORY_WORK_STATUS } from "../../utils/constant"
-  import { formatTime } from "../../utils"
+  import mySearch from "@/components/my-search/index.vue"
+  import {BUG_STATUS_CODE, HISTORY_WORK_STATUS, PRIORITY_CODE} from "../../utils/constant"
+  import {formatTime} from "../../utils"
   import Toast from "@/../static/vant/toast/toast"
 
   export default {
@@ -146,7 +164,8 @@
       "my-progress": myProgress,
       "my-desc-item": myDescItem,
       "my-table": myTable,
-      "my-table-row": myTableRow
+      "my-table-row": myTableRow,
+      "my-search": mySearch
     },
     computed: {
       i18n() {
@@ -157,21 +176,27 @@
       },
       rows() {
         const i18n = this.$t("message")
+        PRIORITY_CODE.unshift({id: "", name: "all"})
         return [
           {
             width: "22%",
             name: i18n.TicketID,
-            isArrow: true
+            isArrow: true,
+            type: "TicketId"
           },
           {
             width: "19%",
             name: i18n.Type,
-            isArrow: true
+            isArrow: true,
+            selectOptions: [{id: "", name: "all"}, {id: 0, name: "incident"}, {id: 2, name: "change"}],
+            type: "TicketType"
           },
           {
             width: "20%",
             name: i18n.Priority,
-            isArrow: true
+            isArrow: true,
+            selectOptions: PRIORITY_CODE,
+            type: "Priority"
           },
           {
             width: "19%",
@@ -181,7 +206,8 @@
           {
             width: "20%",
             name: i18n.Time,
-            isArrow: true
+            isArrow: true,
+            type: 'dateTime'
           }
         ]
       }
@@ -192,6 +218,7 @@
         activeNamesInterface: [],
         deviceInfo: {},
         historyList: [],
+        historyOldList: [],
         BUG_STATUS_CODE: BUG_STATUS_CODE,
         HISTORY_WORK_STATUS: HISTORY_WORK_STATUS,
         tickId: "",
@@ -205,7 +232,14 @@
         memoryList: [],
         oldActice: [], // 存储以前打开过的接口率
         ping: 0,
-        pingColor: "red"
+        pingColor: "red",
+        searchShow: false,
+        searchValue: "",
+        searchType: "",
+        showTimeMark: false, // 时间选择器
+        currentDate: new Date().getTime(),
+        minDate: new Date().getTime(),
+        maxDate: new Date(2019, 10, 1).getTime(),
       }
     },
     mounted() {
@@ -244,14 +278,18 @@
       getHistory(deviceId) {
         this.$fly.get(`Api/ServiceDesk/Ticket/Device/Ticket/Get/${deviceId}`).then(res => {
           if (res) {
-            this.historyList = res.map(item => {
+            const data = res.map(item => {
               const format = formatTime(new Date(item.CreatedLocalTime), "/")
               return {
                 ...item,
                 date: format.t1.slice(2),
-                time: format.t2
+                time: format.t2,
+                dateTime: new Date(item.CreatedLocalTime).getTime()
               }
             })
+            this.historyList = data
+            this.historyOldList = data
+
             this.tickId = this.historyList[this.historyList.length - 1].TicketId
           }
         })
@@ -262,11 +300,11 @@
 
         // 将半年的时间单位换算成毫秒
         var halfYear = 24 * 3600 * 1000
-        const { start, end } = this._getTime(halfYear)
+        const {start, end} = this._getTime(halfYear)
         this.$fly.get(`Api/Nms/Devices/${deviceId}/Alerts?start=${start}&end=${end}`).then(res => {
           if (res) {
             this.historyWaringList = res.map(item => {
-              const { t1, t2 } = formatTime(new Date(item.DeviceLocalTime))
+              const {t1, t2} = formatTime(new Date(item.DeviceLocalTime))
               const username = item.CustomerName
               return {
                 ...item,
@@ -495,15 +533,15 @@
           const itemId = splitData[1]
           const chartId = splitData[splitData.length - 1]
 
-          console.log(listName, chartId,itemId)
+          console.log(listName, chartId, itemId)
           let paramsItem = {}
           this[listName].forEach(item => {
-            if (item.ChartId == chartId&&item.ItemId == itemId) {
+            if (item.ChartId == chartId && item.ItemId == itemId) {
               paramsItem = item
             }
           })
           var halfYear = 1 * 3600 * 1000
-          const { start, end } = this._getTime(halfYear)
+          const {start, end} = this._getTime(halfYear)
           paramsItem.Start = start
           paramsItem.End = end
 
@@ -520,7 +558,7 @@
             const splitList = resData.ChartData.split(/[\n\s]/).filter(item => !!item)
             const str = splitList[splitList.length - 1]
             const valueList = str.split(",")
-            console.log(valueList===listName)
+            console.log(valueList === listName)
             if (listName === "interfaceList") {
               paramsItem.in = Number(valueList[valueList.length - 1])
               paramsItem.out = Number(valueList[valueList.length - 2])
@@ -541,13 +579,82 @@
               paramsItem.value = Number(valueList[valueList.length - 2])
             }
 
-            console.log('paramsItem',paramsItem)
+            console.log('paramsItem', paramsItem)
 
           }
         } finally {
           Toast.clear()
         }
-      }
+      },
+      onSelectOption(params) {
+        console.log(params)
+        const selectId = params.select.id
+        if (selectId === "") {
+          this.historyList = this.historyOldList.map(item => item)
+        } else {
+          this.historyList = this.historyOldList.filter(item => {
+            if (item[params.item.type] === selectId) {
+              return item
+            }
+          })
+        }
+
+        this.isShowSelect = false
+      },
+      onRowClick(params) {
+        this.searchType = params.item.type
+        console.log(params)
+        const backList = ['TicketType', 'Priority']
+
+        if (this.searchType === 'dateTime') {
+          this.showTimeMark = true // 显示时间选择器
+          return
+        }
+        if (backList.indexOf(this.searchType) > -1 || !this.searchType) {
+          return
+        }
+        this.searchShow = true
+      },
+      onSearch(value) {
+        this.searchValue = value
+        if (!value) {
+          this.historyList = this.historyOldList.map(item => item)
+        } else {
+          this.historyList = this.historyOldList.filter(item => {
+            if (item[this.searchType].toString() && item[this.searchType].toString().toLocaleLowerCase().indexOf(value.toLocaleLowerCase()) > -1) {
+              return item
+            }
+          })
+        }
+        if (this.historyList.length === 0) {
+          Toast("暂无数据")
+          return
+        }
+        this.searchShow = false
+      },
+      onClear() {
+        this.searchValue = ""
+        this.searchType = ""
+      },
+      onClose() {
+        this.searchShow = false
+      },
+
+      // 确定时间
+      onTimeConfirm(event) {
+        this.currentDate = event.mp.detail
+        console.log(this.currentDate)
+        this.showTimeMark = false
+        this.historyList = this.historyOldList.filter(item => {
+          if (item.dateTime <= this.currentDate) {
+            return item
+          }
+        })
+      },
+      // 关闭时间弹出层
+      onCloseTimeMark() {
+        this.showTimeMark = false
+      },
     }
   }
 </script>
