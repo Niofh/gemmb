@@ -107,10 +107,12 @@
       }
     },
     mounted() {
-      console.log(this.customerTag, "===================================")
-      this.getDevicesTotal()
-      this.getWarning()
-      this.getWorkTotal()
+      if(this.customerTag){
+        this.getDevicesTotal()
+        this.getWarning()
+        this.getWorkTotal()
+      }
+
     },
     methods: {
       onChangeSelect(e) {

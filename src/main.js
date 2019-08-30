@@ -14,7 +14,6 @@ Vue.config.productionTip = false
 App.mpType = "app"
 
 
-
 // 全局mixin
 Vue.mixin({
 
