@@ -286,6 +286,10 @@
                 time: format.t2,
                 dateTime: new Date(item.CreatedLocalTime).getTime()
               }
+            }).filter((item) => {
+              if (item.Priority < 4) {
+                return item
+              }
             })
             this.historyList = data
             this.historyOldList = data

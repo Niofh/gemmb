@@ -254,11 +254,12 @@
       },
       onRowClick1(params) {
         this.searchType = params.item.type
+        console.log(this.searchType)
         if (this.searchType === "ChangeType" || !this.searchType) {
           return
         }
         this.sType = 2
-        this.isShowSelect1 = true
+        this.searchShow = true
       },
       onSearch(value) {
         if (this.sType === 1) {

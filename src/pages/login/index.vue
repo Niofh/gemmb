@@ -55,10 +55,10 @@
   export default {
     data() {
       return {
-        password: "test@135", // test@135
+        password: "", // test@135
         checked: false,
         form: {
-          Identity: "test_public@demo", // 用户名test_public@demo
+          Identity: "", // 用户名test_public@demo
           EncryptedPassword: "",
           HashedPassword: "", // md5加密码
           OneTimePassword: ""
