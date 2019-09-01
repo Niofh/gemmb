@@ -294,7 +294,7 @@
             this.historyList = data
             this.historyOldList = data
 
-            this.tickId = this.historyList[this.historyList.length - 1].TicketId
+            this.tickId = this.historyList.length > 0 && this.historyList[this.historyList.length - 1].TicketId
           }
         })
       },
