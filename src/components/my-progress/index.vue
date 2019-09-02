@@ -4,7 +4,7 @@
       <div class="left">
 
         <span>{{leftText}}</span>
-        <icon v-show="icon" class="icon" :color="processColor" :type="icon" size="18" />
+        <icon v-show="icon" class="icon" :color="iconColor" :type="icon" size="18" />
       </div>
       <div class="right">
         {{rightText}}
@@ -53,6 +53,10 @@
         default: "#CCCCCC"
       },
       icon: {
+        type: String,
+        default: ""
+      },
+      iconColor: {
         type: String,
         default: ""
       },

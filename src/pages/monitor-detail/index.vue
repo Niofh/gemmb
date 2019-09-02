@@ -42,10 +42,10 @@
                                  :name="inter.type">
                 <div class="desc" v-show="inter.Description">{{inter.Description}}</div>
                 <my-progress :number="inter.in" :total="100" process-color="#0CC808" left-text="in"
-                             :icon="inter.inIcon">
+                             :icon="inter.inIcon" :icon-color="inter.inIconColor">
                 </my-progress>
                 <my-progress :number="inter.out" :total="100" process-color="#E60012" left-text="out"
-                             :icon="inter.outIcon">
+                             :icon="inter.outIcon" :icon-color="inter.outIconColor">
                 </my-progress>
               </van-collapse-item>
             </van-collapse>
@@ -556,6 +556,8 @@
 
           paramsItem.inIcon = "warn"
           paramsItem.outIcon = "warn"
+          paramsItem.inIconColor = "#E60012"
+          paramsItem.outIconColor = "#E60012"
           if (resData.ChartData) {
             const splitList = resData.ChartData.split(/[\n\s]/).filter(item => !!item)
             const str = splitList[splitList.length - 1]
@@ -568,11 +570,13 @@
 
               if (paramsItem.in >= 0 && paramsItem.in <= 70) {
                 paramsItem.inIcon = "success"
+                paramsItem.inIconColor = "#0CC808"
               }
 
 
               if (paramsItem.out >= 0 && paramsItem.out <= 70) {
                 paramsItem.outIcon = "success"
+                paramsItem.outIconColor = "#0CC808"
               }
 
             } else if (listName === "cpuList") {
