@@ -157,7 +157,7 @@
   import {BUG_STATUS_CODE, HISTORY_WORK_STATUS, PRIORITY_CODE} from "../../utils/constant"
   import {formatTime} from "../../utils"
   import Toast from "@/../static/vant/toast/toast"
-
+  PRIORITY_CODE.unshift({id: "", name: "all"})
   export default {
     mixins: [myTableRowMixin],
     components: {
@@ -176,7 +176,6 @@
       },
       rows() {
         const i18n = this.$t("message")
-        PRIORITY_CODE.unshift({id: "", name: "all"})
         return [
           {
             width: "22%",
