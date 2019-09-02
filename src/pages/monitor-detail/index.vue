@@ -41,10 +41,10 @@
               <van-collapse-item v-for="inter in interfaceList" :key="inter.name" :title="inter.name"
                                  :name="inter.type">
                 <div class="desc" v-show="inter.Description">{{inter.Description}}</div>
-                <my-progress :number="inter.in" :total="100" process-color="#0CC808" left-text="in"
+                <my-progress :number="inter.in" :total="100" process-color="#0CC808" left-text="in" :right-text="inter.in"
                              :icon="inter.inIcon" :icon-color="inter.inIconColor">
                 </my-progress>
-                <my-progress :number="inter.out" :total="100" process-color="#E60012" left-text="out"
+                <my-progress :number="inter.out" :total="100" process-color="#E60012" left-text="out" :right-text="inter.out"
                              :icon="inter.outIcon" :icon-color="inter.outIconColor">
                 </my-progress>
               </van-collapse-item>
@@ -58,9 +58,9 @@
 
           <div class="my-collapse">
             <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
-              <van-collapse-item v-for="inter in cpuList" :key="inter.name" :title="inter.name" :name="inter.type">
+              <van-collapse-item v-for="inter in cpuList" :key="inter.name" :title="inter.name" :name="inter.type" >
                 <div class="desc" v-show="inter.Description">{{inter.Description}}</div>
-                <my-progress :number="inter.value" :total="100" process-color="#0CC808">
+                <my-progress :number="inter.value" :total="100" process-color="#0CC808" :right-text="inter.value">
                 </my-progress>
               </van-collapse-item>
             </van-collapse>
@@ -73,7 +73,7 @@
             <van-collapse :value="activeNamesInterface" @change="onChangeInterface">
               <van-collapse-item v-for="inter in memoryList" :key="inter.name" :title="inter.name" :name="inter.type">
                 <div class="desc" v-show="inter.Description">{{inter.Description}}</div>
-                <my-progress :number="inter.value" :total="100" process-color="#0CC808">
+                <my-progress :number="inter.value" :total="100" process-color="#0CC808" :right-text="inter.value">
                 </my-progress>
               </van-collapse-item>
             </van-collapse>
