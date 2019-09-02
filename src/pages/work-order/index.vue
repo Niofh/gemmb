@@ -81,13 +81,13 @@
       },
       rows() {
         const i18n = this.$t("message")
-        PRIORITY_CODE.unshift({ id: "", name: "all" })
+
         return [
           {
             width: "23%",
             name: i18n.Priority,
             isArrow: true,
-            selectOptions: PRIORITY_CODE,
+            selectOptions: [{id: "", name: "all"},...PRIORITY_CODE],
             type: "Priority"
           },
           {
