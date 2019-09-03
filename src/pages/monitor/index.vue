@@ -103,7 +103,13 @@
     },
     mounted() {
       this.getDeviceList()
+
+    },
+    onShow(){
       this.timout()
+    },
+    onHide(){
+      this.timer && clearInterval(this.timer)
     },
     onUnload() {
       this.timer && clearInterval(this.timer)
