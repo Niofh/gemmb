@@ -55,7 +55,7 @@
 
 <style>
   page {
-    height: 100%;
+    /*height: 100%;*/
     background-color: #F5F6F9;
     font-family: PingFangSC-Regular;
   }

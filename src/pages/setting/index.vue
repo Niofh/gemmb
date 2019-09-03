@@ -1,5 +1,6 @@
 <template>
   <div class="setting">
+    <div></div>
     <div class="header">{{i18n.setting}}</div>
 
 
@@ -21,6 +22,10 @@
       <img class="img" src="https://wechat.logicalisservice.com/images/map.png" alt="maps">
       {{i18n.Language}}
       <span class="right">{{i18n.lang}}</span>
+    </div>
+    <div class="img-bg">
+      <img class="img" src="https://wechat.logicalisservice.com/images/contact.png"" alt="">
+
     </div>
     <div class="btn">
       <button type="primary" @click="onSignOut"> {{i18n.signOut}}</button>
@@ -107,6 +112,7 @@
       }
     }
 
+
   }
 
 </style>
@@ -142,6 +148,14 @@
 
       .right {
         float right
+      }
+    }
+
+    .img-bg{
+      margin-top rpx(100)
+      padding rpx(30)
+      .img{
+        width 100%
       }
     }
   }

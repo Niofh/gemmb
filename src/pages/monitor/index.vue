@@ -28,8 +28,8 @@
       <!--      <my-pagination :pages="10"></my-pagination>-->
     </div>
     <div class="station"></div>
-    <van-toast id="van-toast"/>
-    <my-footer :active="1"/>
+    <van-toast id="van-toast" />
+    <my-footer :active="1" />
     <my-search :show="searchShow" @search="onSearch" @clear="onClear" @close="onClose"></my-search>
   </div>
 </template>
@@ -39,8 +39,8 @@
   import myTableRow from "@/components/my-table-row/index.vue"
   import mySearch from "@/components/my-search/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import { selectOptions, Severity } from "@/utils/constant"
-  import { SeverityStatus } from "../../utils/constant"
+  import {selectOptions, Severity} from "@/utils/constant"
+  import {SeverityStatus} from "../../utils/constant"
   import Toast from "@/../static/vant/toast/toast"
 
   export default {
@@ -59,7 +59,7 @@
       },
       rows() {
         const i18n = this.$t("message")
-        selectOptions.unshift({ id: "", name: "all" })
+        selectOptions.unshift({id: "", name: "all"})
         return [
           {
             width: "20%",
@@ -97,13 +97,26 @@
         SeverityStatus: SeverityStatus,
         searchShow: false,
         searchValue: "",
-        searchType: ""
+        searchType: "",
+        timer: null
       }
     },
     mounted() {
       this.getDeviceList()
+      this.timout()
+    },
+    onUnload() {
+      this.timer && clearInterval(this.timer)
     },
     methods: {
+
+      // 定时任务
+      timout() {
+        this.timer = setInterval(() => {
+          this.getDeviceList()
+        }, 5000)
+      },
+
       // 获取设备列表
       getDeviceList() {
         this.$fly.get(`Api/Nms/Customers/${this.customerTag}/DeviceStatus`).then(res => {
