@@ -152,10 +152,12 @@
     }
 
     .img-bg{
-      margin-top rpx(100)
-      padding rpx(30)
+      position absolute
+      bottom rpx(360)
+      padding 0 rpx(30)
       .img{
-        width 100%
+        width rpx(690)
+        height rpx(421)
       }
     }
   }
