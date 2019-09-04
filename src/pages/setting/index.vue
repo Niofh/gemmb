@@ -157,8 +157,8 @@
       padding 0 rpx(30)
       .img{
         width rpx(690)
-        height rpx(286)
-        background-size rpx(690) rpx(286)
+        height rpx(170)
+        background-size rpx(690) rpx(170)
       }
     }
   }
