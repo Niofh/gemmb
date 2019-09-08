@@ -1,7 +1,7 @@
 <template>
   <div class="my-desc-item" :style="{'borderTopColor':borderColor}">
     <div class="my-desc-body">
-    {{text}}
+      <wxParse :content="text" />
     </div>
     <div class="my-desc-footer">
       <spam class="left">{{date}}</spam>
@@ -10,6 +10,7 @@
   </div>
 </template>
 <script>
+  import wxParse from 'mpvue-wxparse'
   export default {
     name: "my-desc-item",
     props: {
@@ -29,7 +30,10 @@
         type: String,
         default: ""
       },
-    }
+    },
+    components: {
+      wxParse
+    },
   };
 </script>
 
