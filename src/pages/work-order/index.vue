@@ -38,18 +38,20 @@
       <div class="my-table-cell" v-for="c in changeWorkList" :key="c.TicketID"
            :style="{'backgroundColor':c.PriorityHtmlColor}">
         <div class="my-cell-item" :style="{'width':changeRows[0].width}">
-          <div class="left">{{c.TicketID}}</div>
+          <div class="left ">
+            <a class="link" :href="'/pages/work-order-detail/main?id='+c.TicketId+''">{{c.TicketId}}</a>
+          </div>
         </div>
         <div class="my-cell-item" :style="{'width':changeRows[1].width}">
-          <div class="left ">{{CHANGE_TYPE_CODE(c.ChangeType)}}</div>
+          <div class="left ">{{CHANGE_TYPE_CODE[c.ChangeType]}}</div>
         </div>
         <div class="my-cell-item" :style="{'width':changeRows[2].width}">
-          <div class="left">{{CHANGE_STATUS_CODE(c.ChangeState)}}</div>
+          <div class="left">{{CHANGE_STATUS_CODE[c.ChangeState]}}</div>
         </div>
       </div>
     </div>
     <my-search :show="searchShow" @search="onSearch" @clear="onClear" @close="onClose"></my-search>
-    <van-toast id="van-toast"/>
+    <van-toast id="van-toast" />
     <my-footer :active="2"></my-footer>
   </div>
 </template>
@@ -59,7 +61,7 @@
   import myTableRow from "@/components/my-table-row/index.vue"
   import mySearch from "@/components/my-search/index.vue"
   import myFooter from "@/components/my-footer/index.vue"
-  import { BUG_STATUS_CODE, CHANGE_STATUS_CODE, CHANGE_TYPE_CODE, PRIORITY_CODE } from "../../utils/constant"
+  import {BUG_STATUS_CODE, CHANGE_STATUS_CODE, CHANGE_TYPE_CODE, PRIORITY_CODE} from "../../utils/constant"
   import myTableRowMixin from "../../mixins/myTableRowMixin"
   import Toast from "@/../static/vant/toast/toast"
 
@@ -87,7 +89,7 @@
             width: "23%",
             name: i18n.Priority,
             isArrow: true,
-            selectOptions: [{id: "", name: "all"},...PRIORITY_CODE],
+            selectOptions: [{id: "", name: "all"}, ...PRIORITY_CODE],
             type: "Priority"
           },
           {
@@ -147,7 +149,7 @@
     mounted() {
       console.log("mounted")
 
-      const dataCode = [{ id: "", name: "all" }]
+      const dataCode = [{id: "", name: "all"}]
       for (let key in CHANGE_TYPE_CODE) {
         dataCode.push({
           id: key,
@@ -175,16 +177,17 @@
         })
 
       },
-      async getResults(ticketSearchResults) {
+      getResults(ticketSearchResults) {
+
+        const dataTicketIncidentDetail = []
+        const dataTicketChangeDetail = []
         for (let i = 0; i < ticketSearchResults.length; i++) {
           const item = ticketSearchResults[i]
-          console.log(item)
+          console.log('item.TicketChangeDetail', item.TicketChangeDetail && item.TicketChangeDetail.ChangeState, item.TicketChangeDetail)
           const TicketId = item.TicketId
 
           // const Device = await this.getDevice(TicketId)
 
-          const dataTicketIncidentDetail = []
-          const dataTicketChangeDetail = []
           if (item.TicketIncidentDetail) {
             dataTicketIncidentDetail.push({
               TicketId: item.TicketIncidentDetail.TicketId,
@@ -194,19 +197,22 @@
             })
           }
           if (item.TicketChangeDetail) {
+            console.log(typeof item.TicketChangeDetail, item.TicketChangeDetail)
+            console.log('item.TicketChangeDetail', item.TicketChangeDetail)
             dataTicketChangeDetail.push({
               PriorityHtmlColor: item.PriorityHtmlColor,
-              TicketId: item.TicketIncidentDetail.TicketId,
-              IncidentState: item.TicketIncidentDetail.IncidentState,
-              ChangeState: item.TicketIncidentDetail.ChangeState,
-              ChangeType: item.TicketIncidentDetail.ChangeType
+              TicketId: item.TicketChangeDetail.TicketId,
+              IncidentState: item.TicketChangeDetail.TicketId,
+              ChangeState: item.TicketChangeDetail.ChangeState,
+              ChangeType: item.TicketChangeDetail.ChangeType
             })
           }
-
-          this.bugWorkList = this.bugWorkOldList = dataTicketIncidentDetail
-          this.changeWorkList = this.changeWorkOldList = dataTicketChangeDetail
-
         }
+        console.log(dataTicketIncidentDetail, "============================================")
+
+        this.bugWorkList = this.bugWorkOldList = dataTicketIncidentDetail
+        this.changeWorkList = this.changeWorkOldList = dataTicketChangeDetail
+
         console.log("this.bugWorkList", this.bugWorkList)
         console.log("this.changeWorkList", this.changeWorkList)
       },
@@ -243,8 +249,9 @@
         if (selectId === "") {
           this.changeWorkList = this.changeWorkOldList.map(item => item)
         } else {
+
           this.changeWorkList = this.changeWorkOldList.filter(item => {
-            if (item[params.item.type] === selectId) {
+            if (item[params.item.type] == selectId) {
               return item
             }
           })
