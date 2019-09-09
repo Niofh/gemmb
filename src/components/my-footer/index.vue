@@ -63,7 +63,7 @@
   .my-footer {
     >>> .van-tabbar {
       background #E9E9E9 !important
-      z-index 1000 !important
+      z-index 30 !important
     }
 
     .active {
