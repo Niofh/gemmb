@@ -127,7 +127,7 @@
         this.$fly.get(`Api/Nms/Customers/${this.customerTag}/DeviceStatus`).then(res => {
           if (res && res.length) {
             this.deviceList = this.oldList = res.filter(item => {
-              if (item.Severity < 7) {
+              if (item.Severity < 5) {
                 return item
               }
             })
