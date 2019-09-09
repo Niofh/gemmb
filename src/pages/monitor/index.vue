@@ -101,9 +101,8 @@
         timer: null
       }
     },
-    mounted() {
+    mounted(){
       this.getDeviceList()
-
     },
     onShow(){
       this.timout()

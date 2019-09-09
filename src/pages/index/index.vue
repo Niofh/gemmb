@@ -56,9 +56,6 @@
   import { Severity, SeverityStatus } from "@/utils/constant"
 
   export default {
-    onShow() {
-      wx.hideTabBar({})
-    },
     components: {
       "my-footer": myFooter,
       "my-progress": myProgress
@@ -106,7 +103,8 @@
         severityStatus: SeverityStatus
       }
     },
-    mounted() {
+    onShow() {
+      wx.hideTabBar({})
       if(this.customerTag){
         this.getDevicesTotal()
         this.getWarning()

@@ -146,9 +146,7 @@
         isShowSelect1: false
       }
     },
-    mounted() {
-      console.log("mounted")
-
+    mounted(){
       const dataCode = [{id: "", name: "all"}]
       for (let key in CHANGE_TYPE_CODE) {
         dataCode.push({
@@ -157,6 +155,8 @@
         })
       }
       this.CHANGE_TYPE_CODE_select = dataCode
+    },
+    onShow() {
       this.getBusWork()
     },
 

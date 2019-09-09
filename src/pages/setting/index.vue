@@ -83,7 +83,7 @@
           success(res) {
             if (res.confirm) {
               wx.clearStorageSync()
-              wx.redirectTo({
+              wx.reLaunch({
                 url: "/pages/login/main"
               })
             } else if (res.cancel) {
