@@ -50,6 +50,7 @@
         </div>
       </div>
     </div>
+    <div class="station"></div>
     <my-search :show="searchShow" @search="onSearch" @clear="onClear" @close="onClose"></my-search>
     <van-toast id="van-toast" />
     <my-footer :active="2"></my-footer>

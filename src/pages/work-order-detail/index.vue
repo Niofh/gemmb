@@ -127,6 +127,12 @@
       this.getWorkLog(tickId)
 
     },
+    onUnload(){
+      console.log('onUnload')
+      this.bugWorkList = []
+      this.workLog = []
+      this.deviceList = []
+    },
     methods: {
       // 获取故障工单
       getBusWork(ticketId) {
@@ -145,6 +151,7 @@
 
       // 获取工单日志
       getWorkLog(tickId) {
+        this.workLog = []
         this.$fly.get(`Api/ServiceDesk/Tickets/${tickId}/TicketJournals`).then(res => {
           if (res && res.length > 0) {
             this.workLog = res.map(item => {
@@ -183,9 +190,6 @@
         })
       }
 
-    },
-    onUnload() {
-      this.bugWorkList = []
     }
   }
 </script>
