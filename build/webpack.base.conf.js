@@ -10,6 +10,8 @@ var glob = require('glob')
 var CopyWebpackPlugin = require('copy-webpack-plugin')
 var relative = require('relative')
 var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+var Px2rpx = require('px2rpx');
+var px2rpxIns = new Px2rpx({ rpxUnit: 0.5 });
 function resolve (dir) {
   return path.join(__dirname, '..', dir)
 }
@@ -113,6 +115,13 @@ let baseWebpackConfig = {
       {
         from: path.resolve(__dirname, '../static'),
         to: path.resolve(config.build.assetsRoot, './static'),
+        transform(content, path) {
+          if (path.endsWith('.wxss')) {
+            return px2rpxIns.generaterpx(content.toString(), 1)
+          } else {
+            return content
+          }
+        },
         ignore: ['.*']
       }
     ]),
