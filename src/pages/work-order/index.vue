@@ -157,10 +157,15 @@
       }
       this.CHANGE_TYPE_CODE_select = dataCode
     },
+
     onShow() {
       this.getBusWork()
     },
-
+    onHide(){
+      console.log('onUnload')
+      this.bugWorkList = []
+      this.changeWorkList = []
+    },
     methods: {
       getBusWork() {
         this.$fly.post(`Api/ServiceDesk/Customers/${this.customerTag}/TicketSearch`, {

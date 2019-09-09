@@ -28,8 +28,8 @@
       <!--      <my-pagination :pages="10"></my-pagination>-->
     </div>
     <div class="station"></div>
-    <van-toast id="van-toast" />
-    <my-footer :active="1" />
+    <van-toast id="van-toast"/>
+    <my-footer :active="1"/>
     <my-search :show="searchShow" @search="onSearch" @clear="onClear" @close="onClose"></my-search>
   </div>
 </template>
@@ -39,8 +39,8 @@
   import myTableRow from "@/components/my-table-row/index.vue"
   import mySearch from "@/components/my-search/index.vue"
   import myTableRowMixin from "@/mixins/myTableRowMixin"
-  import {selectOptions, Severity} from "@/utils/constant"
-  import {SeverityStatus} from "../../utils/constant"
+  import { selectOptions, Severity } from "@/utils/constant"
+  import { SeverityStatus } from "../../utils/constant"
   import Toast from "@/../static/vant/toast/toast"
 
   export default {
@@ -59,7 +59,7 @@
       },
       rows() {
         const i18n = this.$t("message")
-        selectOptions.unshift({id: "", name: "all"})
+        selectOptions.unshift({ id: "", name: "all" })
         return [
           {
             width: "20%",
@@ -101,13 +101,13 @@
         timer: null
       }
     },
-    mounted(){
+    mounted() {
       this.getDeviceList()
     },
-    onShow(){
+    onShow() {
       this.timout()
     },
-    onHide(){
+    onHide() {
       this.timer && clearInterval(this.timer)
     },
     onUnload() {
@@ -126,8 +126,11 @@
       getDeviceList() {
         this.$fly.get(`Api/Nms/Customers/${this.customerTag}/DeviceStatus`).then(res => {
           if (res && res.length) {
-            this.deviceList = res
-            this.oldList = res
+            this.deviceList = this.oldList = res.filter(item => {
+              if (item.Severity < 7) {
+                return item
+              }
+            })
           }
         })
       },
