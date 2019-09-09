@@ -21,7 +21,7 @@
     </div>
 
 
-    <div class="order-id">{{i18n.AssociatedTicketID}} : <a class="link"
+    <div class="order-id">{{i18n.AssociatedTicketID}} : <a v-if="tickId" class="link"
                                                            :href="'/pages/work-order-detail/main?id='+tickId">{{tickId}}</a>
     </div>
     <div class="header">{{i18n.performanceManagement}}</div>
@@ -251,6 +251,7 @@
       this.getPerformance(deviceId)
     },
     onUnload() {
+      console.log('onUnload')
       this.cpuData = []
       this.cpuList = []
       this.interfaceData = []
