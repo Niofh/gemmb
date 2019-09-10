@@ -762,8 +762,12 @@
     .my-cell-item {
       height rpx(76)
       line-height rpx(76)
+      .date{
+         height rpx(50)
+      }
     }
   }
+
 
 
 </style>
