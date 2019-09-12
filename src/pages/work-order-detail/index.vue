@@ -1,6 +1,6 @@
 <template>
   <div class="work-order">
-    <div class="header">{{i18n.faultTicket}}</div>
+    <div class="header">{{i18n.workOrderDetails}}</div>
     <div class="table-wrap">
       <my-table-row :rows="rows"></my-table-row>
       <div class="my-table-cell"
