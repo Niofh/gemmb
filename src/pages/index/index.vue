@@ -53,7 +53,7 @@
 <script>
   import myFooter from "@/components/my-footer/index.vue"
   import myProgress from "@/components/my-progress/index.vue"
-  import { Severity, SeverityStatus } from "@/utils/constant"
+  import {Severity, SeverityStatus} from "@/utils/constant"
 
   export default {
     components: {
@@ -103,14 +103,16 @@
         severityStatus: SeverityStatus
       }
     },
+    created() {
+
+    },
     onShow() {
       wx.hideTabBar({})
-      if(this.customerTag){
+      if (this.customerTag) {
         this.getDevicesTotal()
         this.getWarning()
         this.getWorkTotal()
       }
-
     },
     methods: {
       onChangeSelect(e) {
@@ -149,6 +151,11 @@
       getWarning() {
         this.$fly.get(`Api/Nms/Customers/${this.customerTag}/AlertSummary`).then(res => {
           if (res && res.length > 0) {
+            this.waringObj.Critical.number = 0
+            this.waringObj.Warning.number = 0
+            this.waringObj.Minor.number = 0
+            this.waringObj.Major.number = 0
+            this.waringTotal = 0
             res.forEach(item => {
               this.waringObj.Critical.number += item.Critical
               this.waringObj.Warning.number += item.Warning
@@ -171,6 +178,12 @@
           "Priorities": [1, 2, 3, 4]
         }).then(res => {
           if (res.TicketSearchResults && res.TicketSearchResults.length > 0) {
+            this.work = {
+              p1: 0,
+              p2: 0,
+              p3: 0,
+              p4: 0
+            }
             res.TicketSearchResults.forEach(item => {
               if (item.Priority === 1) {
                 this.work.p1++
